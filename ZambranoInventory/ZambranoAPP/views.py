@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .models import TblMsUsuario
+from .models import TblMsUsuario, TblMsRoles
 
 
 def bienvenido(request):
@@ -15,6 +15,27 @@ def bienvenido(request):
     }
     # Renderizar la plantilla con los datos de contexto
     return render(request, "bienvenido.html", context)
+
+
+def users_view(request):
+    usuarios = TblMsUsuario.objects.all()
+
+    # Obtener el usuario de la sesión
+    usuario = request.session.get('usuario')
+    # Si no hay usuario en la sesión, redirigir al login
+    if not usuario:
+        return redirect('login')
+    # Pasar los valores a la plantilla
+    #context = {
+    #   'usuario': usuario,
+    #}
+    # Renderizar la plantilla con los datos de contexto
+    return render(request, "usuarios_view.html", {'usuarios': usuarios})
+
+def rols_view(request):
+    roles = TblMsRoles.objects.all()
+    return render(request, "roles_view.html", {'roles': roles} )
+
 
 
 def login(request):
@@ -35,7 +56,7 @@ def login(request):
         # Redirigir a la página de bienvenida
         return redirect('bienvenido')
     else:
-        mensaje = "No se encontró un usuario"
+        mensaje = "Porfavor ingrese un usuario valido"
 
     # Pasar los valores a la plantilla
     context = {

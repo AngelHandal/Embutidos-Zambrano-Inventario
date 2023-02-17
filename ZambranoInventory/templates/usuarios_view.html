@@ -1,0 +1,50 @@
+{% extends 'base.html' %} {% block content %}
+
+<h1>Lista de Usuarios</h1>
+
+<div class="table-responsive">
+  <table class="table" style="width: 100%">
+    <thead>
+      <tr>
+        <th>Id Usuario</th>
+        <th>Id Rol</th>
+        <th>Usuario</th>
+        <th>Nombre Usuario</th>
+        <th>Estado Usuario</th>
+        <th>Contraseña</th>
+        <th>Fecha Última Conexión</th>
+        <th>Primer Ingreso</th>
+        <th>Fecha Vencimiento</th>
+        <th>Correo Electrónico</th>
+        <th>Creado Por</th>
+        <th>Fecha Creación</th>
+        <th>Modificado Por</th>
+        <th>Fecha Modificación</th>
+        <th>Preguntas Contestadas</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for usuario in usuarios %}
+      <tr>
+        <td>{{ usuario.id_usuario }}</td>
+        <td>{{ usuario.id_rol.rol }}</td>
+        <td>{{ usuario.usuario }}</td>
+        <td>{{ usuario.nombre_usuario }}</td>
+        <td>{{ usuario.estado_usuario }}</td>
+        <td>{{ usuario.contrasena }}</td>
+        <td>{{ usuario.fecha_ultima_conexion }}</td>
+        <td>{{ usuario.primer_ingreso }}</td>
+        <td>{{ usuario.fecha_vencimiento }}</td>
+        <td>{{ usuario.correo_electronico }}</td>
+        <td>{{ usuario.creado_por }}</td>
+        <td>{{ usuario.fecha_creacion }}</td>
+        <td>{{ usuario.modificado_por }}</td>
+        <td>{{ usuario.fecha_modificacion }}</td>
+        <td>{{ usuario.preguntas_contestadas }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}
