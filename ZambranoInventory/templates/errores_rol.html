@@ -1,0 +1,11 @@
+{% extends "base.html" %} {% block content %}
+<h1>Ha ocurrido un error</h1>
+<h3>Por favor elimina los usuarios asignados a este rol primero.</h3>
+<h3>O asegurese de que el rol exista.</h3>
+{% if exception_type == 'IntegrityError' %}
+<p>Por favor elimina los usuarios asignados a este rol primero.</p>
+{% elif exception_type == 'Http404' %}
+<p>El rol no existe.</p>
+{% endif %}
+<p>{{ exception_value }}</p>
+{% endblock %}

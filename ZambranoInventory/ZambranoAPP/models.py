@@ -198,6 +198,7 @@ class TblMsPreguntas(models.Model):
 
 
 class TblMsPreguntasUsuario(models.Model):
+    id_pregunta_usuario = models.BigIntegerField(db_column='Id_Pregunta_Usuario', primary_key=True)  # Field name made lowercase.
     id_pregunta = models.ForeignKey(TblMsPreguntas, models.DO_NOTHING, db_column='Id_Pregunta')  # Field name made lowercase.
     id_usuario = models.ForeignKey('TblMsUsuario', models.DO_NOTHING, db_column='Id_Usuario')  # Field name made lowercase.
     respuesta = models.CharField(db_column='Respuesta', max_length=100)  # Field name made lowercase.

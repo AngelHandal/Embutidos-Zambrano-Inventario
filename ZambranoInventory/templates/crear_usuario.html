@@ -1,121 +1,149 @@
 {% extends 'base.html' %} {% block content %}
+<br />
+
+<style>
+  body {
+    background-color: #ffd670;
+  }
+</style>
 <div class="container">
   <div class="row">
     <div class="col-md-8 col-lg-6 mx-auto">
       <div class="card">
         <div class="card-header">
-          <h4 class="card-title">Crear Usuario</h4>
+          <h4 class="card-title" style="text-align: center">Crear Usuario</h4>
         </div>
         <div class="card-body">
           <form method="post">
             {% csrf_token %}
 
-            <div class="form-group">
-              <label for="rol">Rol:</label>
-              <select class="form-control" name="rol" id="id_rol">
-                {% for rol in roles %}
-                <option value="{{ rol.id_rol }}">{{ rol.rol }}</option>
-                {% endfor %}
-              </select>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="rol">Rol:</label>
+                <select class="form-control" name="rol" id="id_rol">
+                  {% for rol in roles %}
+                  <option value="{{ rol.id_rol }}">{{ rol.rol }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <div class="form-group col-md-6">
+                <label for="usuario">Usuario:</label>
+                <input
+                  type="text"
+                  name="usuario"
+                  id="usuario"
+                  class="form-control"
+                  required
+                />
+              </div>
             </div>
 
-            <div class="form-group">
-              <label for="usuario">Usuario:</label>
-              <input
-                type="text"
-                name="usuario"
-                id="usuario"
-                class="form-control"
-                required
-              />
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="correo_electronico">Correo Electronico:</label>
+                <input
+                  type="email"
+                  name="correo_electronico"
+                  id="correo_electronico"
+                  class="form-control"
+                  required
+                />
+              </div>
+
+              <div class="form-group col-md-6">
+                <label for="nombre_usuario">Nombre de usuario:</label>
+                <input
+                  type="text"
+                  name="nombre_usuario"
+                  id="nombre_usuario"
+                  class="form-control"
+                  required
+                />
+              </div>
             </div>
 
-            <div class="form-group">
-              <label for="correo_electronico">Correo Electronico:</label>
-              <input
-                type="email"
-                name="correo_electronico"
-                id="correo_electronico"
-                class="form-control"
-                required
-              />
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="estado_usuario">Estado de usuario:</label>
+                <input
+                  type="text"
+                  name="estado_usuario"
+                  id="estado_usuario"
+                  class="form-control"
+                  required
+                />
+              </div>
+
+              <div class="form-group col-md-6">
+                <label for="contrasena">Contraseña:</label>
+                <div class="input-group">
+                  <input
+                    type="password"
+                    name="contrasena"
+                    id="contrasena"
+                    class="form-control"
+                    required
+                  />
+                  <div class="input-group-append">
+                    <button
+                      type="button"
+                      id="togglePassword"
+                      class="btn btn-outline-secondary"
+                    >
+                      <i class="fa fa-eye"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <div class="form-group">
-              <label for="nombre_usuario">Nombre de usuario:</label>
-              <input
-                type="text"
-                name="nombre_usuario"
-                id="nombre_usuario"
-                class="form-control"
-                required
-              />
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="confirmar_contrasena">Confirmar Contraseña:</label>
+                <input
+                  type="password"
+                  name="confirmar_contrasena"
+                  id="confirmar_contrasena"
+                  class="form-control"
+                  required
+                />
+              </div>
+
+              <div class="form-group col-md-6">
+                <label for="pregunta">Pregunta de seguridad:</label>
+                <select class="form-control" name="pregunta" id="pregunta">
+                  {% for pregunta in preguntas %}
+                  <option value="{{ pregunta.id_pregunta }}">
+                    {{ pregunta.pregunta }}
+                  </option>
+                  {% endfor %}
+                </select>
+              </div>
             </div>
 
-            <div class="form-group">
-              <label for="estado_usuario">Estado de usuario:</label>
-              <input
-                type="text"
-                name="estado_usuario"
-                id="estado_usuario"
-                class="form-control"
-                required
-              />
-            </div>
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="respuesta">Respuesta de seguridad:</label>
+                <input
+                  type="text"
+                  name="respuesta"
+                  id="respuesta"
+                  class="form-control"
+                  required
+                />
+              </div>
 
-            <div class="form-group">
-              <label for="contrasena">Contraseña:</label>
-              <input
-                type="password"
-                name="contrasena"
-                id="contrasena"
-                class="form-control"
-                required
-              />
-            </div>
-
-            <div class="form-group">
-              <label for="confirmar_contrasena">Confirmar Contraseña:</label>
-              <input
-                type="password"
-                name="confirmar_contrasena"
-                id="confirmar_contrasena"
-                class="form-control"
-                required
-              />
-            </div>
-
-            <div class="form-group">
-              <label for="pregunta">Pregunta de seguridad:</label>
-              <select class="form-control" name="pregunta" id="pregunta">
-                {% for pregunta in preguntas %}
-                <option value="{{ pregunta.id_pregunta }}">
-                  {{ pregunta.pregunta }}
-                </option>
-                {% endfor %}
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label for="respuesta">Respuesta de seguridad:</label>
-              <input
-                type="text"
-                name="respuesta"
-                id="respuesta"
-                class="form-control"
-                required
-              />
-            </div>
-
-            <div class="form-group">
-              <label for="fecha_vencimiento">Fecha de vencimiento:</label>
-              <input
-                type="datetime-local"
-                name="fecha_vencimiento"
-                id="fecha_vencimiento"
-                class="form-control"
-                required
-              />
+              <div class="form-group col-md-6">
+                <label for="fecha_vencimiento">Fecha de vencimiento:</label>
+                <input
+                  type="datetime-local"
+                  name="fecha_vencimiento"
+                  id="fecha_vencimiento"
+                  class="form-control"
+                  required
+                />
+              </div>
             </div>
 
             <button type="submit" class="btn btn-primary">Crear usuario</button>
@@ -125,6 +153,7 @@
     </div>
   </div>
 </div>
+
 <script>
   const nombreUsuarioInput = document.getElementById("nombre_usuario");
   nombreUsuarioInput.addEventListener("input", () => {
@@ -168,6 +197,18 @@
     } else {
       passwordConfirmationInput.setCustomValidity("");
     }
+  });
+
+  const togglePassword = document.getElementById("togglePassword");
+  const password = document.getElementById("contrasena");
+  togglePassword.addEventListener("click", function (e) {
+    // alternar tipo de entrada de contraseña
+    const type =
+      password.getAttribute("type") === "password" ? "text" : "password";
+    password.setAttribute("type", type);
+    // cambiar el icono del botón
+    this.querySelector("i").classList.toggle("fa-eye");
+    this.querySelector("i").classList.toggle("fa-eye-slash");
   });
 </script>
 {% endblock %}

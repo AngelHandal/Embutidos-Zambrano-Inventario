@@ -1,6 +1,11 @@
 {% extends 'base.html' %} {% block content %}
-
+<style>
+  body {
+    background-color: #ffd670;
+  }
+</style>
 <h1>Lista de Roles</h1>
+<a href="{% url 'crear_rol'  %}" class="btn btn-primary">Crear Rol</a>
 
 <div class="table-responsive">
   <table class="table" style="width: 100%">
@@ -13,6 +18,7 @@
         <th>Fecha de Creacion</th>
         <th>Modificado Por</th>
         <th>Fecha de Modificacion</th>
+        <th>Acciones</th>
       </tr>
     </thead>
     <tbody>
@@ -25,10 +31,17 @@
         <td>{{ rol.fecha_creacion }}</td>
         <td>{{ rol.modificado_por }}</td>
         <td>{{ rol.fecha_modificacion }}</td>
+        <td>
+          <a href="{% url 'editar_rol' rol.id_rol %}" class="btn btn-primary"
+            >Editar</a
+          >
+          <a href="{% url 'eliminar_rol' rol.id_rol %}" class="btn btn-danger"
+            >Eliminar</a
+          >
+        </td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
 </div>
-
 {% endblock %}
