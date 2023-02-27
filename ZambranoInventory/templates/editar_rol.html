@@ -1,7 +1,46 @@
 {% extends 'base.html' %} {% block content %}
-<h1>Editar rol "{{ rol.rol }}"</h1>
-<form method="post">
+
+<style>
+  html,
+  body {
+    height: 100%;
+  }
+  body {
+    background: radial-gradient(circle at top, #ffbb00, #e61414);
+    background-size: cover;
+  }
+  .container {
+    background-color: white;
+    border: 1px solid black;
+    font-size: 25px;
+    font-family: "Teko", sans-serif;
+  }
+  button {
+    text-align: center;
+  }
+  form {
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  label {
+    font-size: 20px;
+  }
+</style>
+<br /><br /><br /><br /><br />
+<h1 style="text-align: center; font-family: Teko, sans-serif">
+  Editar rol "{{ rol.rol }}"
+</h1>
+<form
+  method="post"
+  style="
+    font-family: Teko, sans-serif;
+    background-color: white;
+    text-align: center;
+  "
+>
   {% csrf_token %}
+  <br />
   <div class="form-group">
     <label for="rol">Rol</label>
     <input
@@ -22,6 +61,18 @@
       value="{{ rol.descripcion }}"
     />
   </div>
-  <button type="submit" class="btn btn-primary">Guardar cambios</button>
+
+  <div style="text-align: center">
+    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+    <button type="button" class="btn btn-danger" id="btn-volver">
+      Cancelar
+    </button>
+  </div>
+  <br /><br />
 </form>
+<script>
+  document.getElementById("btn-volver").addEventListener("click", function () {
+    window.location.href = "{% url 'rols_views' %}";
+  });
+</script>
 {% endblock %}

@@ -1,19 +1,65 @@
-{% extends 'base.html' %} {% block content %}
-<h1>Crear Rol</h1>
-<form method="post" action="{% url 'crear_rol' %}">
-  {% csrf_token %}
-  <div class="form-group">
-    <label for="rol">Rol:</label>
-    <input type="text" name="rol" class="form-control" required />
-  </div>
-  <div class="form-group">
-    <label for="descripcion">Descripción:</label>
-    <textarea name="descripcion" class="form-control" required></textarea>
-  </div>
-  <div class="form-group">
-    <label for="creado_por">Creado por:</label>
-    <input type="text" name="creado_por" class="form-control" required />
-  </div>
-  <button type="submit" class="btn btn-primary">Guardar cambios</button>
-</form>
+{% extends 'base.html' %} {% block content %} <br /><br />
+
+<style>
+  html,
+  body {
+    height: 100%;
+  }
+  body {
+    background: radial-gradient(circle at top, #ffbb00, #e61414);
+    background-size: cover;
+  }
+  .container {
+    background-color: white;
+    border: 1px solid black;
+    font-size: 25px;
+    font-family: "Teko", sans-serif;
+  }
+  button {
+    text-align: center;
+  }
+</style>
+<br /><br /><br /><br />
+<h1 style="text-align: center; font-family: Teko, sans-serif">Crear Rol</h1>
+<div
+  class="container"
+  style="font-family: Teko, sans-serif; text-align: center"
+>
+  <form method="post" action="{% url 'crear_rol' %}">
+    {% csrf_token %}
+    <div class="form-group">
+      <br />
+      <label for="rol">Rol:</label>
+      <input
+        type="text"
+        name="rol"
+        class="form-control"
+        required
+        placeholder="Ingrese el nombre del rol"
+      />
+    </div>
+    <div class="form-group">
+      <label for="descripcion">Descripción:</label>
+      <textarea
+        name="descripcion"
+        class="form-control"
+        required
+        placeholder="Ingrese la descripcion del nuevo rol"
+      ></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+    <button type="button" class="btn btn-danger" id="btn-cancelar">
+      Cancelar
+    </button>
+    <br /><br />
+  </form>
+</div>
+
+<script>
+  document
+    .getElementById("btn-cancelar")
+    .addEventListener("click", function () {
+      window.location.href = "{% url 'rols_views' %}";
+    });
+</script>
 {% endblock %}

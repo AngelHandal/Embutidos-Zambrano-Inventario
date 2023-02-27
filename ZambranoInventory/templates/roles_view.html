@@ -1,14 +1,35 @@
 {% extends 'base.html' %} {% block content %}
 <style>
+  html,
   body {
-    background-color: #ffd670;
+    height: 100%;
+  }
+  body {
+    font-family: Teko, sans-serif;
+    background: radial-gradient(circle at top, #ffbb00, #e61414);
+    background-size: cover;
+    color: black;
+  }
+  table,
+  th,
+  td {
+    border: 1px solid black;
+    font-family: Teko, sans-serif;
+    color: rgb(0, 0, 0);
+    background-color: rgba(
+      255,
+      255,
+      255,
+      0.276
+    ); /* Agregado para establecer el color de fondo de las celdas de la tabla */
   }
 </style>
-<h1>Lista de Roles</h1>
-<a href="{% url 'crear_rol'  %}" class="btn btn-primary">Crear Rol</a>
-
+<br /><br /><br /><br /><br />
+<h1 style="text-align: center; font-size: 65px">Lista de Roles</h1>
+<a href="{% url 'crear_rol'  %}" class="btn btn-primary">Crear Rol</a><br />
+<br />
 <div class="table-responsive">
-  <table class="table" style="width: 100%">
+  <table class="table" style="width: 100%; text-align: center">
     <thead>
       <tr>
         <th>Id Rol</th>
@@ -43,5 +64,23 @@
       {% endfor %}
     </tbody>
   </table>
+  <div style="text-align: center">
+    <button
+      type="button"
+      class="btn btn-primary"
+      id="btn-volver"
+      style="height: 70px"
+    >
+      Volver al menu principal
+    </button>
+  </div>
 </div>
+<script>
+  const btnVolver = document.querySelector("#btn-volver");
+
+  //volver al menu principal
+  document.getElementById("btn-volver").addEventListener("click", function () {
+    window.location.href = "{% url 'bienvenido' %}";
+  });
+</script>
 {% endblock %}

@@ -89,9 +89,9 @@ def crear_rol(request):
         # obtener los datos del formulario
         rol = request.POST.get('rol')
         descripcion = request.POST.get('descripcion')
-        creado_por = request.user.username
+        #creado_por = request.user.username
         fecha_creacion = timezone.now()
-        modificado_por = request.user.username
+        #modificado_por = request.user.username
         fecha_modificacion = timezone.now()
 
         # obtener el último valor de id_rol y aumentar en 1 para asignar el nuevo id
@@ -103,9 +103,9 @@ def crear_rol(request):
             id_rol=nuevo_id,
             rol=rol,
             descripcion=descripcion,
-            creado_por=creado_por,
+            creado_por=request.session.get('usuario'),
             fecha_creacion=fecha_creacion,
-            modificado_por=modificado_por,
+            modificado_por=request.session.get('usuario'),
             fecha_modificacion=fecha_modificacion
         )
 
@@ -195,9 +195,9 @@ def crear_usuario(request):
             contrasena=request.POST.get("contrasena"),
             correo_electronico=request.POST.get("correo_electronico"),
             id_rol=rol,
-            preguntas_contestadas=0,  # inicializamos la cantidad de preguntas contestadas a 0
-            creado_por=request.user.username, # utilizamos el usuario autenticado como creador y modificador
-            modificado_por=request.user.username,
+            preguntas_contestadas=1,  # inicializamos la cantidad de preguntas contestadas a 0
+            creado_por=request.session.get('usuario'), # utilizamos el usuario autenticado como creador y modificador
+            modificado_por=request.session.get('usuario'),
             fecha_ultima_conexion=timezone.now(),
             primer_ingreso=True,
             fecha_vencimiento=request.POST.get("fecha_vencimiento"),
@@ -208,21 +208,23 @@ def crear_usuario(request):
 
         # obtenemos las respuestas de las preguntas y las guardamos
         preguntas_usuario = []
+        
+        """
         nuevo_id_Pregunta_usuario = TblMsPreguntasUsuario.objects.order_by("-id_pregunta_usuario").first()
         if nuevo_id_Pregunta_usuario is not None:
             nuevo_id_Pregunta_usuario = nuevo_id_Pregunta_usuario.id_pregunta_usuario + 1
         else:
             nuevo_id_Pregunta_usuario = 1
-
+        """
         for pregunta in preguntas:
             respuesta = request.POST.get(f"pregunta_{pregunta.id_pregunta}")
             pregunta_usuario = TblMsPreguntasUsuario(
-                id_pregunta_usuario=nuevo_id_Pregunta_usuario,
+                #id_pregunta_usuario=nuevo_id_Pregunta_usuario,
                 id_pregunta=pregunta,
                 id_usuario=usuario,
                 respuesta=request.POST.get("respuesta"),
-                creado_por=request.user.username,
-                modificado_por=request.user.username,
+                creado_por=request.POST.get("nombre_usuario"),
+                modificado_por=request.POST.get("nombre_usuario"),
                 fecha_creacion=timezone.now(),
                 fecha_modificacion=timezone.now(),
             )

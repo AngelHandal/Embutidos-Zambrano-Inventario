@@ -2,11 +2,17 @@
 <br />
 
 <style>
+  html,
   body {
-    background-color: #ffd670;
+    height: 100%;
+  }
+  body {
+    background: radial-gradient(circle at top, #ffbb00, #e61414);
+    background-size: cover;
   }
 </style>
-<div class="container">
+<br /><br />
+<div class="container" style="font-family: Teko, sans-serif">
   <div class="row">
     <div class="col-md-8 col-lg-6 mx-auto">
       <div class="card">
@@ -147,6 +153,9 @@
             </div>
 
             <button type="submit" class="btn btn-primary">Crear usuario</button>
+            <button type="button" class="btn btn-danger" id="btn-cancelar">
+              Cancelar
+            </button>
           </form>
         </div>
       </div>
@@ -210,5 +219,11 @@
     this.querySelector("i").classList.toggle("fa-eye");
     this.querySelector("i").classList.toggle("fa-eye-slash");
   });
+
+  document
+    .getElementById("btn-cancelar")
+    .addEventListener("click", function () {
+      window.location.href = "{% url 'user_views' %}";
+    });
 </script>
 {% endblock %}

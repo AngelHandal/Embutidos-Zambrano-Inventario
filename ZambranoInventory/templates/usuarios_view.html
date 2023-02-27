@@ -1,13 +1,113 @@
 {% extends 'base.html' %} {% block content %}
 
-<h1>Lista de Usuarios</h1>
+<style>
+  html,
+  body {
+    height: 100%;
+  }
+  body {
+    background: radial-gradient(circle at top, #ffbb00, #e61414);
+    background-size: cover;
+  }
+  table {
+    font-family: "Teko", sans-serif;
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+  }
 
+  table,
+  th,
+  td {
+    border: 3px solid black;
+  }
+
+  th,
+  td {
+    text-align: center;
+    padding: 8px;
+  }
+
+  th {
+    background-color: #f0f8ff;
+    color: #000000;
+    font-weight: bold;
+  }
+
+  tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+
+  .table {
+    width: 100%;
+    white-space: nowrap;
+  }
+
+  .table-responsive {
+    overflow-x: auto;
+    width: 100%;
+  }
+  button {
+    font-family: "Teko", sans-serif;
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: "Teko", sans-serif;
+  }
+</style>
+
+<br /><br />
+<h1 style="text-align: center; font-size: 65px">
+  <strong>Lista de Usuarios</strong>
+</h1>
+<br /><br />
+<div>
+  <h3 style="color: #ffffff">Filtrar por</h3>
+  <button
+    id="btn-activos"
+    style="
+      background-color: #000000;
+      color: rgb(255, 255, 255);
+      height: 50px;
+      border-radius: 15px;
+    "
+  >
+    Activos
+  </button>
+  <button
+    id="btn-inactivos"
+    style="
+      background-color: #000000;
+      color: rgb(255, 255, 255);
+      height: 50px;
+      border-radius: 15px;
+    "
+  >
+    Inactivos
+  </button>
+  <button
+    id="btn-todos"
+    style="
+      background-color: #000000;
+      color: rgb(255, 255, 255);
+      height: 50px;
+      border-radius: 15px;
+    "
+  >
+    Todos
+  </button>
+</div>
+<br />
 <div class="table-responsive">
-  <table class="table" style="width: 100%">
+  <table class="table" style="width: 100%" id="tabla-usuarios">
     <thead>
       <tr>
         <th>Id Usuario</th>
-        <th>Id Rol</th>
+        <th>Rol</th>
         <th>Usuario</th>
         <th>Nombre Usuario</th>
         <th>Estado Usuario</th>
@@ -45,6 +145,51 @@
       {% endfor %}
     </tbody>
   </table>
+  <div style="text-align: center">
+    <button
+      type="button"
+      class="btn btn-primary"
+      id="btn-volver"
+      style="height: 70px"
+    >
+      Volver al menu principal
+    </button>
+  </div>
 </div>
 
+<script>
+  // Obtener los botones
+  const btnActivos = document.querySelector("#btn-activos");
+  const btnInactivos = document.querySelector("#btn-inactivos");
+  const btnTodos = document.querySelector("#btn-todos");
+  const btnVolver = document.querySelector("#btn-volver");
+
+  //volver al menu principal
+  document.getElementById("btn-volver").addEventListener("click", function () {
+    window.location.href = "{% url 'bienvenido' %}";
+  });
+
+  // Obtener la tabla
+  const tablaUsuarios = document.querySelector("#tabla-usuarios");
+
+  // Agregar un event listener a cada botón
+  btnActivos.addEventListener("click", () => filtrarUsuarios("Activo"));
+  btnInactivos.addEventListener("click", () => filtrarUsuarios("Inactivo"));
+  btnTodos.addEventListener("click", () => filtrarUsuarios(null));
+
+  // Función para filtrar los usuarios
+  function filtrarUsuarios(estado) {
+    // Recorrer todas las filas de la tabla
+    for (let i = 0; i < tablaUsuarios.rows.length; i++) {
+      const row = tablaUsuarios.rows[i];
+
+      // Si la columna de estado no coincide con el estado seleccionado y no es la fila de encabezado, ocultar la fila
+      if (estado && row.cells[4].textContent !== estado && i !== 0) {
+        row.style.display = "none";
+      } else {
+        row.style.display = "";
+      }
+    }
+  }
+</script>
 {% endblock %}
