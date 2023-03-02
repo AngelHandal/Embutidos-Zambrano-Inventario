@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Recuperar </title>
+    <title>Actualizar Contrasena</title>
 
     <!-- Enlace de Bootstrap CSS -->
     <link
@@ -32,7 +32,6 @@
         background-color: #03bb85;
 
         /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-
       }
 
       @media (min-width: 768px) {
@@ -59,7 +58,7 @@
                   <div class="card-body p-md-5 mx-md-4">
                     <div class="text-center">
                       <img
-                      src="{% static 'images/NewLogo.png' %}"
+                        src="{% static 'images/NewLogo.png' %}"
                         style="width: 185px"
                         alt="logo"
                       />
@@ -69,28 +68,34 @@
                     <form method="POST">
                       {% csrf_token %}
 
-                      <p style="text-align: center;"><strong>Ingrese su usuario para recuperar su contraseña</strong></p>
-
-                      <div class="form-outline mb-4">
+                      <div class="form-outline mb-4" style="text-align: center">
+                        <label for="pregunta">
+                          <strong>
+                            Actulizando contrasena de {{usuario}}
+                          </strong>
+                        </label>
+                        <br />
+                        <p><strong>Nueva Contrasena</strong></p>
                         <input
                           type="text"
                           class="form-control"
-                          id="usuario"
-                          name="usuario"
+                          id="nuevacontra"
+                          name="nuevacontra"
                         />
-                       
                       </div>
 
                       <div class="text-center pt-1 mb-5 pb-1">
                         <button
                           id="btn-recuperar"
-                          class="btn btn-primary btn-block fa-lg  mb-3"
-                          type="submit" 
-                          style="background-color: #ff3562;"
+                          class="btn btn-primary btn-block fa-lg mb-3"
+                          type="submit"
+                          style="background-color: #ff3562"
                         >
-                          Recuperar
-                        </button></br>
-                        <a class="text-muted" href="{% url 'login' %}">Volver</a>
+                          Actualizar</button
+                        ><br />
+                        <a class="text-muted" href="{% url 'olvide_pass' %}"
+                          >Volver</a
+                        >
                       </div>
                     </form>
                   </div>
@@ -108,6 +113,45 @@
       integrity="sha384-WJZWfy76tv20tPvD8uv+0nFV7jK9+iaaLJhYnRzGQ7+uyljJ3V7n/qmZU+V6UHAf"
       crossorigin="anonymous"
     ></script>
+    <script>
+      const passwordInput = document.getElementById("nuevacontra");
 
+      passwordInput.addEventListener("input", () => {
+        const password = passwordInput.value;
+        const errors = [];
+
+        if (password.length < 8) {
+          errors.push("La contraseña debe tener al menos 8 caracteres.");
+        }
+
+        if (!password.match(/[A-Z]/)) {
+          errors.push(
+            "La contraseña debe incluir al menos una letra mayúscula."
+          );
+        }
+
+        if (!password.match(/[a-z]/)) {
+          errors.push(
+            "La contraseña debe incluir al menos una letra minúscula."
+          );
+        }
+
+        if (!password.match(/[0-9]/)) {
+          errors.push("La contraseña debe incluir al menos un número.");
+        }
+
+        if (!password.match(/[^A-Za-z0-9]/)) {
+          errors.push(
+            "La contraseña debe incluir al menos un carácter especial."
+          );
+        }
+
+        if (errors.length > 0) {
+          passwordInput.setCustomValidity(errors.join("\n"));
+        } else {
+          passwordInput.setCustomValidity("");
+        }
+      });
+    </script>
   </body>
 </html>

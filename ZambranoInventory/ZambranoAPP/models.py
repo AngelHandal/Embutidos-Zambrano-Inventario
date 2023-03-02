@@ -210,7 +210,6 @@ class TblMsPreguntasUsuario(models.Model):
         managed = False
         db_table = 'tbl_ms_preguntas_usuario'
 
-
 class TblMsRoles(models.Model):
     id_rol = models.BigIntegerField(db_column='Id_Rol', primary_key=True)  # Field name made lowercase.
     rol = models.CharField(db_column='Rol', max_length=30)  # Field name made lowercase.

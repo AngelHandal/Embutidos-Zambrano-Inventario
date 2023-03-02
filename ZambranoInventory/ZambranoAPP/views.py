@@ -2,8 +2,10 @@ from django.shortcuts import render, redirect,get_object_or_404, redirect
 from django.contrib import messages
 from .models import TblMsUsuario, TblMsRoles, TblMsPreguntas,TblMsPreguntasUsuario
 from django.utils import timezone
-from django.http import Http404
+from django.http import Http404,JsonResponse
 from django.db import IntegrityError
+
+
 
 
 def bienvenido(request):
@@ -19,36 +21,60 @@ def bienvenido(request):
     # Renderizar la plantilla con los datos de contexto
     return render(request, "bienvenido.html", context)
 
+def actualizar_contrasena_por_preguntas(request):
+    # obtenemos el usuario que nos interesa
+    usuario = request.session.get('usuario')
+    usuario_obj = TblMsUsuario.objects.get(usuario=usuario)
+    # obtenemos el id de mi usuario
+    id_usuario = usuario_obj.id_usuario
+
+    if request.method == 'POST':
+        nueva_contra = request.POST.get('nuevacontra')
+        usuario_obj.contrasena = nueva_contra
+        usuario_obj.save()
+        return redirect('login')
+
+    return render(request, "actualizar_por_pregunta.html", {"usuario": usuario, "id_usuario": id_usuario})
+
+
+def preguntas_seguridad_recuperar(request):
+    usuario = request.session.get('usuario')
+    usuario_obj = TblMsUsuario.objects.get(usuario=usuario)
+    id_usuario = usuario_obj.id_usuario
+    #accedemos a las respuestas de mi usuario
+    #preguntas_usuario = TblMsPreguntasUsuario.objects.filter(id_usuario=id_usuario)
+    preguntas_usuario = TblMsPreguntasUsuario.objects.filter(id_usuario=id_usuario).values('respuesta')
+
+    context = {'preguntas_usuario': preguntas_usuario}
+    #obtenemos todas las preguntas
+    preguntas = TblMsPreguntas.objects.all()
+    return render(request, 'responde_pregunta.html', {"preguntas": preguntas, "usuario": usuario, "id_usuario": id_usuario, **context})
+
+
+
+
+
+
 
 def olvide_pass(request):
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        pregunta_id = request.POST.get('pregunta')
-        respuesta = request.POST.get('respuesta')
-        password = request.POST.get('password')
+    usuario = None
+    mensaje = None
+    if request.method == "POST":
+        usuario = request.POST['usuario']
+        # Buscar usuario y contraseña en la base de datos
+    usuarios = TblMsUsuario.objects.filter(usuario=usuario)
 
-        try:
-            user = TblMsUsuario.objects.get(usuario=username)
-            pregunta_usuario = TblMsPreguntasUsuario.objects.get(
-                id_usuario=user.id_usuario, id_pregunta_id=pregunta_id)
+    # Si se encontró un usuario con la contraseña proporcionada
+    if usuarios.exists():
+        # Guardar el usuario en la sesión
+        request.session['usuario'] = usuario
+        # Redirigir a la página donde se mostraran las preguntas de seguridad
+        return redirect('responde_pregunta')
+    else:
+        mensaje = "Por favor ingrese un usuario valido"
+       
+    return render(request, 'olvide_pass.html')
 
-            if pregunta_usuario.respuesta == respuesta:
-                if password:
-                    user.contrasena = password
-                    user.save()
-
-                messages.success(request, 'Contraseña actualizada con éxito')
-                return redirect('login')
-            else:
-                messages.error(request, 'La respuesta es incorrecta')
-        except TblMsUsuario.DoesNotExist:
-            messages.error(request, 'El usuario no existe')
-        except TblMsPreguntasUsuario.DoesNotExist:
-            messages.error(request, 'La pregunta seleccionada no es válida')
-
-    preguntas = TblMsPreguntasUsuario.objects.all()
-    context = {'preguntas': preguntas}
-    return render(request, 'olvide_pass.html', context)
 
 
 def users_view(request):

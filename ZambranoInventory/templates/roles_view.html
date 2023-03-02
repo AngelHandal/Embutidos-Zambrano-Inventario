@@ -10,8 +10,11 @@
     background-size: cover;
     color: black;
   }
+  th {
+    background-color: #171717;
+    color: rgb(255, 255, 255);
+  }
   table,
-  th,
   td {
     border: 1px solid black;
     font-family: Teko, sans-serif;
@@ -25,20 +28,20 @@
   }
 </style>
 <br /><br /><br /><br /><br />
-<h1 style="text-align: center; font-size: 65px">Lista de Roles</h1>
-<a href="{% url 'crear_rol'  %}" class="btn btn-primary">Crear Rol</a><br />
+<h1 style="text-align: center; font-size: 65px">Roles</h1>
+<a href="{% url 'crear_rol'  %}" class="btn btn-primary">Crear</a><br />
 <br />
 <div class="table-responsive">
   <table class="table" style="width: 100%; text-align: center">
     <thead>
       <tr>
-        <th>Id Rol</th>
+        <th>Id</th>
         <th>Rol</th>
         <th>Descripcion</th>
         <th>Creado Por</th>
-        <th>Fecha de Creacion</th>
+        <th>Fecha Creacion</th>
         <th>Modificado Por</th>
-        <th>Fecha de Modificacion</th>
+        <th>Fecha Modificacion</th>
         <th>Acciones</th>
       </tr>
     </thead>
@@ -53,12 +56,14 @@
         <td>{{ rol.modificado_por }}</td>
         <td>{{ rol.fecha_modificacion }}</td>
         <td>
-          <a href="{% url 'editar_rol' rol.id_rol %}" class="btn btn-primary"
-            >Editar</a
-          >
-          <a href="{% url 'eliminar_rol' rol.id_rol %}" class="btn btn-danger"
-            >Eliminar</a
-          >
+          <a href="{% url 'editar_rol' rol.id_rol %}" class="btn btn-primary">
+            <i class="fas fa-pencil-alt"></i>
+            <!-- Icono de lápiz de Font Awesome -->
+          </a>
+          <a href="{% url 'eliminar_rol' rol.id_rol %}" class="btn btn-danger">
+            <i class="fas fa-trash-alt"></i>
+            <!-- Icono de basurero de Font Awesome -->
+          </a>
         </td>
       </tr>
       {% endfor %}
@@ -71,7 +76,7 @@
       id="btn-volver"
       style="height: 70px"
     >
-      Volver al menu principal
+      Volver
     </button>
   </div>
 </div>

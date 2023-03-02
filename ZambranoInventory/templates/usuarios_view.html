@@ -3,6 +3,7 @@
 <style>
   html,
   body {
+    font-family: "Teko", sans-serif;
     height: 100%;
   }
   body {
@@ -58,13 +59,31 @@
   h6 {
     font-family: "Teko", sans-serif;
   }
+
+  /* NUEVO CSS PARA EL FILTRO */
+  #filtro-container {
+    float: right;
+    margin: 20px 0 20px 20px;
+    display: flex;
+    align-items: center;
+  }
+
+  #filtro-container > * {
+    margin-right: 20px;
+  }
 </style>
 
 <br /><br />
 <h1 style="text-align: center; font-size: 65px">
-  <strong>Lista de Usuarios</strong>
+  <strong>Usuarios</strong>
 </h1>
 <br /><br />
+<div id="filtro-container">
+  <div>
+    <h3 style="color: #ffffff">Buscar</h3>
+    <input type="text" id="filtro-nombre" placeholder="Ej. Nombre" />
+  </div>
+</div>
 <div>
   <h3 style="color: #ffffff">Filtrar por</h3>
   <button
@@ -106,7 +125,7 @@
   <table class="table" style="width: 100%" id="tabla-usuarios">
     <thead>
       <tr>
-        <th>Id Usuario</th>
+        <th>Id</th>
         <th>Rol</th>
         <th>Usuario</th>
         <th>Nombre Usuario</th>
@@ -152,7 +171,7 @@
       id="btn-volver"
       style="height: 70px"
     >
-      Volver al menu principal
+      Volver
     </button>
   </div>
 </div>
@@ -163,6 +182,7 @@
   const btnInactivos = document.querySelector("#btn-inactivos");
   const btnTodos = document.querySelector("#btn-todos");
   const btnVolver = document.querySelector("#btn-volver");
+  const inputFiltro = document.querySelector("#filtro-nombre");
 
   //volver al menu principal
   document.getElementById("btn-volver").addEventListener("click", function () {
@@ -189,6 +209,27 @@
       } else {
         row.style.display = "";
       }
+    }
+  }
+
+  inputFiltro.addEventListener("input", () =>
+    filtrarUsuarios(inputFiltro.value)
+  );
+
+  function filtrarUsuarios(nombre) {
+    const filas = tablaUsuarios.getElementsByTagName("tr");
+    for (let i = 0; i < filas.length; i++) {
+      const celdas = filas[i].getElementsByTagName("td");
+      let mostrarFila = false;
+      for (let j = 0; j < celdas.length; j++) {
+        if (
+          celdas[j].textContent.toUpperCase().indexOf(nombre.toUpperCase()) > -1
+        ) {
+          mostrarFila = true;
+          break;
+        }
+      }
+      filas[i].style.display = mostrarFila ? "" : "none";
     }
   }
 </script>

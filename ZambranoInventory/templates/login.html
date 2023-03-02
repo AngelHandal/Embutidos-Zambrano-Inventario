@@ -15,105 +15,115 @@
       crossorigin="anonymous"
     />
 
-    <!-- Enlace de la fuente Teko -->
-    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Gloock&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Teko:wght@500&display=swap"
       rel="stylesheet"
     />
-    />
+
     <style>
-      body {
-        background-color: #ff994b; /* Cambia el color de fondo */
-        color: #ffffff;
-        font-family: "Gloock", sans-serif;
-      }
-      label {
-        font-size: 1.2rem; /* Cambia el tamaño de letra a 1.2 rem */
-        font-weight: bold;
-        margin-bottom: 5px;
+      /* nuevo login CSS */
+      .gradient-custom-2 {
+        /* fallback for old browsers */
+        background: #fccb90;
+
+        /* Chrome 10-25, Safari 5.1-6 */
+        background-color: #03bb85;
+
+        /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
       }
 
-      .form-control {
-        font-family: "Teko", sans-serif;
-        border-color: #003366; /* Cambia el color del borde de los campos de entrada */
+      @media (min-width: 768px) {
+        .gradient-form {
+          height: 100vh !important;
+        }
       }
-
-      .btn-submit {
-        background-color: #009e90; /* Cambia el color del botón de envío */
-        border-color: #003366;
-        color: #ffffff;
-      }
-
-      .btn-submit:hover {
-        background-color: #94ffcd; /* Cambia el color del botón de envío cuando se pasa el cursor sobre él */
-        border-color: #002147;
-      }
-
-      /* Estilos de formulario */
-      form {
-        text-align: center;
-        border: 1px solid #ffffff;
-        padding: 20px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      }
-
-      /* Estilos de container*/
-      .container {
-        background-color: #e9967a;
-        border: 1px solid #dcdcdc;
-        padding: 20px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      }
-
-      /* Estilos de etiquetas */
-      label {
-        font-weight: bold;
-        margin-bottom: 5px;
-      }
-
-      img {
-        width: 70%;
-        height: 300px;
-        display: block;
-        margin: auto;
+      @media (min-width: 769px) {
+        .gradient-custom-2 {
+          border-top-right-radius: 0.3rem;
+          border-bottom-right-radius: 0.3rem;
+        }
       }
     </style>
   </head>
   <body>
-    <br /><br /><br />
-    <div class="container">
-      <h1 style="text-align: center"><strong>Embutidos Zambrano</strong></h1>
-      <img src="{% static 'images/chanchito.png' %}" alt="Logo" /><br />
+    <section class="h-100 gradient-form" style="background-color: #eee">
+      <div class="container py-5 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+          <div class="col-xl-10">
+            <div class="card rounded-3 text-black">
+              <div class="row g-0">
+                <div class="col-lg-6">
+                  <div class="card-body p-md-5 mx-md-4">
+                    <div class="text-center">
+                      <img
+                      src="{% static 'images/NewLogo.png' %}"
+                        style="width: 185px"
+                        alt="logo"
+                      />
+                      <h4 class="mt-1 mb-5 pb-1">Embutidos Zambrano</h4>
+                    </div>
 
-      {% if mensaje %}
-      <div class="alert alert-info alert-dismissible">{{ mensaje }}</div>
-      {% endif %} {% if error %}
-      <div class="alert alert-danger">{{ error }}</div>
-      {% endif %}
-      <form method="POST">
-        {% csrf_token %}
-        <div class="form-group">
-          <label for="usuario">Usuario:</label>
-          <input type="text" class="form-control" id="usuario" name="usuario" />
+                    <form method="POST">
+                      {% csrf_token %}
+
+                      <p>Usuario</p>
+
+                      <div class="form-outline mb-4">
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="usuario"
+                          name="usuario"
+                        />
+                       
+                      </div>
+
+                      <div class="form-outline mb-4">
+                        <label class="form-label" for="contraseña"
+                        >Contraseña</label
+                      >
+                        <input
+                          type="password"
+                          class="form-control"
+                          id="contraseña"
+                          name="contraseña"
+                        />
+
+                      </div>
+
+                      <div class="text-center pt-1 mb-5 pb-1">
+                        <button
+                          class="btn btn-primary btn-block fa-lg  mb-3"
+                          type="submit" 
+                          style="background-color: #ff3562;"
+                        >
+                          Iniciar Sesion
+                        </button></br>
+                        <a class="text-muted" href="{% url 'olvide_pass' %}">Olvide mi contraseña?</a>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+                <div
+                  class="col-lg-6 d-flex align-items-center gradient-custom-2"
+                >
+                  <div class="text-white px-3 py-4 p-md-5 mx-md-4">
+                    <h4 class="mb-4">Bienvenidos!</h4>
+                    <p class="medium mb-0"><strong>
+                       Nuestra Distribuidora de Embutidos, líder en la industria de alimentos. Ofrecemos productos de alta calidad y nos esforzamos por superar constantemente las expectativas de nuestros clientes en cuanto a calidad, servicio y atención al cliente. Trabajamos en estrecha colaboración con nuestros proveedores para garantizar la sostenibilidad y la responsabilidad social en todas nuestras operaciones.
+                      </strong>
+                      </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <br />
-        <div class="form-group">
-          <label for="contraseña">Contraseña:</label>
-          <input
-            type="password"
-            class="form-control"
-            id="contraseña"
-            name="contraseña"
-          />
-        </div>
-        <br />
-        <button type="submit" class="btn btn-submit">Iniciar sesión</button>
-        <button type="submit" class="btn btn-submit">
-          Olvidé mi Contraseña
-        </button>
-      </form>
-    </div>
+      </div>
+    </section>
 
     <!-- Enlace de Bootstrap JS -->
     <script

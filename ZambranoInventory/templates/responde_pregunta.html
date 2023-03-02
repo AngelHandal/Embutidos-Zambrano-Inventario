@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Recuperar </title>
+    <title>Preguntas de seguridad</title>
 
     <!-- Enlace de Bootstrap CSS -->
     <link
@@ -32,7 +32,6 @@
         background-color: #03bb85;
 
         /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-
       }
 
       @media (min-width: 768px) {
@@ -45,6 +44,9 @@
           border-top-right-radius: 0.3rem;
           border-bottom-right-radius: 0.3rem;
         }
+      }
+      #respuestaBD {
+        display: none;
       }
     </style>
   </head>
@@ -59,7 +61,7 @@
                   <div class="card-body p-md-5 mx-md-4">
                     <div class="text-center">
                       <img
-                      src="{% static 'images/NewLogo.png' %}"
+                        src="{% static 'images/NewLogo.png' %}"
                         style="width: 185px"
                         alt="logo"
                       />
@@ -69,28 +71,46 @@
                     <form method="POST">
                       {% csrf_token %}
 
-                      <p style="text-align: center;"><strong>Ingrese su usuario para recuperar su contraseña</strong></p>
+                      <div class="form-outline mb-4" style="text-align: center">
+                        <label for="pregunta">
+                          <strong>
+                            Preguntas de seguridad de {{usuario}}
+                          </strong>
+                        </label>
+                        <select
+                          class="form-control"
+                          name="pregunta"
+                          id="pregunta"
+                        >
+                          {% for pregunta in preguntas %}
 
-                      <div class="form-outline mb-4">
+                          <option value="{{ pregunta.id_pregunta }}">
+                            {{ pregunta.pregunta }}
+                          </option>
+                          {% endfor %}
+                        </select>
+                        <br />
+                        <p><strong>Respuesta</strong></p>
                         <input
                           type="text"
                           class="form-control"
-                          id="usuario"
-                          name="usuario"
+                          id="respuesta"
+                          name="respuesta"
                         />
-                       
                       </div>
 
                       <div class="text-center pt-1 mb-5 pb-1">
                         <button
                           id="btn-recuperar"
-                          class="btn btn-primary btn-block fa-lg  mb-3"
-                          type="submit" 
-                          style="background-color: #ff3562;"
+                          class="btn btn-primary btn-block fa-lg mb-3"
+                          type="submit"
+                          style="background-color: #ff3562"
                         >
-                          Recuperar
-                        </button></br>
-                        <a class="text-muted" href="{% url 'login' %}">Volver</a>
+                          Recuperar</button
+                        ><br />
+                        <a class="text-muted" href="{% url 'olvide_pass' %}"
+                          >Volver</a
+                        >
                       </div>
                     </form>
                   </div>
@@ -100,6 +120,9 @@
           </div>
         </div>
       </div>
+      {% for pregunta in preguntas_usuario %}
+      <p id="respuestaBD">{{ pregunta.respuesta }}</p>
+      {% endfor %}
     </section>
 
     <!-- Enlace de Bootstrap JS -->
@@ -108,6 +131,21 @@
       integrity="sha384-WJZWfy76tv20tPvD8uv+0nFV7jK9+iaaLJhYnRzGQ7+uyljJ3V7n/qmZU+V6UHAf"
       crossorigin="anonymous"
     ></script>
-
+    <script>
+      const form = document.querySelector("form");
+      form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        const respuesta = document.getElementById("respuesta").value;
+        const respuestaBD = document.getElementById("respuestaBD").innerHTML;
+        if (respuesta === respuestaBD) {
+          //alert("son iguales");
+          window.location.replace("{% url 'actualizar_por_pregunta' %}");
+        } else {
+          alert(
+            "Error, por favor responda correctamente la pregunta de seguridad"
+          );
+        }
+      });
+    </script>
   </body>
 </html>
