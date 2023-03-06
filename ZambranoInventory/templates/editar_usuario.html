@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2 style="text-align:center; color:black">Editar Usuario</h2>
+  <form method="POST">
+    {% csrf_token %}
+    <div class="row">
+      <div class="col-md-6">
+    <div class="form-group">
+      <label for="usuario" style="color:black">Usuario:</label>
+      <input type="text" class="form-control" id="usuario" name="usuario" value="{{ usuario.usuario }}">
+    </div>
+    </div>
+
+    <div class="col-md-6">
+    <div class="form-group">
+      <label for="nombre_usuario" style="color:black">Nombre:</label>
+      <input type="text" class="form-control" id="nombre_usuario" name="nombre_usuario" value="{{ usuario.nombre_usuario }}">
+    </div>
+    </div>
+    </div>
+
+    <div class="row">
+    <div class="col-md-6">
+    <div class="form-group">
+      <label for="estado_usuario" style="color:black">Estado:</label>
+      <select class="form-control" id="estado_usuario" name="estado_usuario">
+        <option value="Activo" {% if usuario.estado_usuario == 'Activo' %}selected{% endif %}>Activo</option>
+        <option value="Inactivo" {% if usuario.estado_usuario == 'Inactivo' %}selected{% endif %}>Inactivo</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="col-md-6"> 
+    <div class="form-group">
+      <label for="contrasena" style="color:black">Contraseña:</label>
+      <input type="password" class="form-control" id="contrasena" name="contrasena" value="{{ usuario.contrasena }}">
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-6">
+    <div class="form-group">
+      <label for="fecha_ultima_conexion" style="color:black">Fecha última conexión:</label>
+      <input type="datetime-local" class="form-control" id="fecha_ultima_conexion" name="fecha_ultima_conexion" value="{{ usuario.fecha_ultima_conexion }}">
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="form-group">
+      <label for="fecha_vencimiento" style="color:black">Fecha de vencimiento:</label>
+      <input type="datetime-local" class="form-control" id="fecha_vencimiento" name="fecha_vencimiento" value="{{ usuario.fecha_vencimiento }}">
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-md-6">
+    <div class="form-group">
+      <label for="correo_electronico" style="color:black">Correo electrónico:</label>
+      <input type="email" class="form-control" id="correo_electronico" name="correo_electronico" value="{{ usuario.correo_electronico }}">
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="form-group">
+      <label for="creado_por" style="color:black">Creado por:</label>
+      <input type="text" class="form-control" id="creado_por" name="creado_por" value="{{ usuario.creado_por }}">
+    </div>
+  </div>
+</div>
+
+  <div class="row">
+    <div class="col-md-6">
+    <div class="form-group">
+      <label for="fecha_creacion" style="color:black">Fecha de creación:</label>
+      <input type="datetime-local" class="form-control" id="fecha_creacion" name="fecha_creacion" value="{{ usuario.fecha_creacion }}">
+    </div>
+  </div>
+ 
+  <div class="col-md-6">
+      <div style="text-align: center">
+        <br>
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <button type="button" class="btn btn-danger" id="btn-volver">
+          Cancelar
+        </button>
+      </div>
+    </div>
+      <br /><br />
+    </div>
+    </form>
+<script>
+    document.getElementById("btn-volver").addEventListener("click", function () {
+      window.location.href = "{% url 'user_views' %}";
+    });
+  </script>
+{% endblock %}

@@ -1,20 +1,12 @@
 {% extends 'base.html' %} {% block content %}
 
 <style>
-  html,
-  body {
-    font-family: "Teko", sans-serif;
-    height: 100%;
-  }
-  body {
-    background: radial-gradient(circle at top, #ffbb00, #e61414);
-    background-size: cover;
-  }
   table {
     font-family: "Teko", sans-serif;
     width: 100%;
     border-collapse: collapse;
     border-spacing: 0;
+    text-decoration: none;
   }
 
   table,
@@ -58,6 +50,7 @@
   h5,
   h6 {
     font-family: "Teko", sans-serif;
+    color: none;
   }
 
   /* NUEVO CSS PARA EL FILTRO */
@@ -74,18 +67,27 @@
 </style>
 
 <br /><br />
-<h1 style="text-align: center; font-size: 65px">
-  <strong>Usuarios</strong>
-</h1>
+
 <br /><br />
+
 <div id="filtro-container">
   <div>
-    <h3 style="color: #ffffff">Buscar</h3>
+    <h3 style="color: black">Buscar</h3>
     <input type="text" id="filtro-nombre" placeholder="Ej. Nombre" />
   </div>
 </div>
 <div>
-  <h3 style="color: #ffffff">Filtrar por</h3>
+  <h3
+    style="
+      color: black;
+      text-align: center;
+      font-size: 80px;
+      text-decoration: none !important;
+    "
+  >
+    USUARIOS
+  </h3>
+
   <button
     id="btn-activos"
     style="
@@ -122,7 +124,11 @@
 </div>
 <br />
 <div class="table-responsive">
-  <table class="table" style="width: 100%" id="tabla-usuarios">
+  <table
+    class="table"
+    style="width: 100%; color: black; hover: none"
+    id="tabla-usuarios"
+  >
     <thead>
       <tr>
         <th>Id</th>
@@ -131,15 +137,10 @@
         <th>Nombre Usuario</th>
         <th>Estado Usuario</th>
         <th>Contraseña</th>
-        <th>Fecha Última Conexión</th>
-        <th>Primer Ingreso</th>
-        <th>Fecha Vencimiento</th>
         <th>Correo Electrónico</th>
         <th>Creado Por</th>
-        <th>Fecha Creación</th>
         <th>Modificado Por</th>
-        <th>Fecha Modificación</th>
-        <th>Preguntas Contestadas</th>
+        <th>Acciones</th>
       </tr>
     </thead>
     <tbody>
@@ -151,15 +152,33 @@
         <td>{{ usuario.nombre_usuario }}</td>
         <td>{{ usuario.estado_usuario }}</td>
         <td>{{ usuario.contrasena }}</td>
-        <td>{{ usuario.fecha_ultima_conexion }}</td>
-        <td>{{ usuario.primer_ingreso }}</td>
-        <td>{{ usuario.fecha_vencimiento }}</td>
         <td>{{ usuario.correo_electronico }}</td>
         <td>{{ usuario.creado_por }}</td>
-        <td>{{ usuario.fecha_creacion }}</td>
         <td>{{ usuario.modificado_por }}</td>
-        <td>{{ usuario.fecha_modificacion }}</td>
-        <td>{{ usuario.preguntas_contestadas }}</td>
+
+        <td>
+          <a
+            href="{% url 'editar_usuario' usuario.id_usuario %}"
+            class="btn btn-primary"
+          >
+            <i class="fas fa-pencil-alt"></i>
+            <!-- Icono de lápiz de Font Awesome --></a
+          >
+          <a
+            href="{% url 'eliminar_usuario' usuario.id_usuario %}"
+            class="btn btn-danger"
+          >
+            <i class="fas fa-trash-alt"></i>
+            <!-- Icono de basurero de Font Awesome -->
+          </a>
+          <a
+            href="{% url 'ver_mas_usuario' usuario.id_usuario %}"
+            class="btn btn-secondary"
+          >
+            <i class="zmdi zmdi-plus"></i>
+            <!-- Icono de basurero de Font Awesome -->
+          </a>
+        </td>
       </tr>
       {% endfor %}
     </tbody>

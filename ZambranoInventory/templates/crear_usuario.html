@@ -17,7 +17,9 @@
     <div class="col-md-8 col-lg-6 mx-auto">
       <div class="card">
         <div class="card-header">
-          <h4 class="card-title" style="text-align: center">Crear Usuario</h4>
+          <h4 class="card-title" style="text-align: center; color: black">
+            Crear Usuario
+          </h4>
         </div>
         <div class="card-body">
           <form method="post">
@@ -25,7 +27,7 @@
 
             <div class="form-row">
               <div class="form-group col-md-6">
-                <label for="rol">Rol:</label>
+                <label for="rol" style="color: black">Rol:</label>
                 <select class="form-control" name="rol" id="id_rol">
                   {% for rol in roles %}
                   <option value="{{ rol.id_rol }}">{{ rol.rol }}</option>
@@ -34,7 +36,7 @@
               </div>
 
               <div class="form-group col-md-6">
-                <label for="usuario">Usuario:</label>
+                <label for="usuario" style="color: black">Usuario:</label>
                 <input
                   type="text"
                   name="usuario"
@@ -47,7 +49,9 @@
 
             <div class="form-row">
               <div class="form-group col-md-6">
-                <label for="correo_electronico">Correo Electronico:</label>
+                <label for="correo_electronico" style="color: black"
+                  >Correo Electronico:</label
+                >
                 <input
                   type="email"
                   name="correo_electronico"
@@ -58,7 +62,9 @@
               </div>
 
               <div class="form-group col-md-6">
-                <label for="nombre_usuario">Nombre de usuario:</label>
+                <label for="nombre_usuario" style="color: black"
+                  >Nombre de usuario:</label
+                >
                 <input
                   type="text"
                   name="nombre_usuario"
@@ -71,7 +77,9 @@
 
             <div class="form-row">
               <div class="form-group col-md-6">
-                <label for="estado_usuario">Estado de usuario:</label>
+                <label for="estado_usuario" style="color: black"
+                  >Estado de usuario:</label
+                >
                 <input
                   type="text"
                   name="estado_usuario"
@@ -82,7 +90,7 @@
               </div>
 
               <div class="form-group col-md-6">
-                <label for="contrasena">Contraseña:</label>
+                <label for="contrasena" style="color: black">Contraseña:</label>
                 <div class="input-group">
                   <input
                     type="password"
@@ -106,7 +114,9 @@
 
             <div class="form-row">
               <div class="form-group col-md-6">
-                <label for="confirmar_contrasena">Confirmar Contraseña:</label>
+                <label for="confirmar_contrasena" style="color: black"
+                  >Confirmar Contraseña:</label
+                >
                 <input
                   type="password"
                   name="confirmar_contrasena"
@@ -117,7 +127,9 @@
               </div>
 
               <div class="form-group col-md-6">
-                <label for="pregunta">Pregunta de seguridad:</label>
+                <label for="pregunta" style="color: black"
+                  >Pregunta de seguridad:</label
+                >
                 <select class="form-control" name="pregunta" id="pregunta">
                   {% for pregunta in preguntas %}
                   <option value="{{ pregunta.id_pregunta }}">
@@ -130,7 +142,9 @@
 
             <div class="form-row">
               <div class="form-group col-md-6">
-                <label for="respuesta">Respuesta de seguridad:</label>
+                <label for="respuesta" style="color: black"
+                  >Respuesta de seguridad:</label
+                >
                 <input
                   type="text"
                   name="respuesta"
@@ -141,7 +155,9 @@
               </div>
 
               <div class="form-group col-md-6">
-                <label for="fecha_vencimiento">Fecha de vencimiento:</label>
+                <label for="fecha_vencimiento" style="color: black"
+                  >Fecha de vencimiento:</label
+                >
                 <input
                   type="datetime-local"
                   name="fecha_vencimiento"

@@ -1,0 +1,48 @@
+{% extends 'base.html' %} {% block content %}
+<div class="container">
+  <h1 style="color: black; text-align: center">Preguntas</h1></br></br>
+  <a href="{% url 'crear_pregunta' %}" class="btn btn-primary mb-2"
+    >Crear</a
+  >
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Pregunta</th>
+        <th>Estado</th>
+        <th>Creado por</th>
+        <th>Fecha creación</th>
+        <th>Modificado por</th>
+        <th>Fecha modificación</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for pregunta in preguntas %}
+      <tr>
+        <td>{{ pregunta.id_pregunta }}</td>
+        <td>{{ pregunta.pregunta }}</td>
+        <td>{{ pregunta.estado }}</td>
+        <td>{{ pregunta.creado_por }}</td>
+        <td>{{ pregunta.fecha_creacion }}</td>
+        <td>{{ pregunta.modificado_por }}</td>
+        <td>{{ pregunta.fecha_modificacion }}</td>
+        <td>
+          <a
+            href="{% url 'editar_pregunta' pregunta.id_pregunta %}"
+            class="btn btn-primary">          
+            <i class="fas fa-pencil-alt"></i>
+            <!-- Icono de lápiz de Font Awesome -->
+        </a>
+          <a
+            href="{% url 'eliminar_pregunta' pregunta.id_pregunta %}"
+            class="btn btn-danger">            
+            <i class="fas fa-trash-alt"></i>
+            <!-- Icono de basurero de Font Awesome --></a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

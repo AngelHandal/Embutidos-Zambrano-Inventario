@@ -15,13 +15,14 @@ class TblCliente(models.Model):
     rtn = models.CharField(db_column='RTN', max_length=100)  # Field name made lowercase.
     descripcion = models.CharField(db_column='Descripcion', max_length=1000)  # Field name made lowercase.
     creado_por = models.CharField(db_column='Creado_Por', max_length=15)  # Field name made lowercase.
-    fceha_creacion = models.DateTimeField(db_column='Fceha_Creacion')  # Field name made lowercase.
+    fecha_creacion = models.DateTimeField(db_column='Fecha_Creacion')  # Field name made lowercase.
     modificado_por = models.CharField(db_column='Modificado_Por', max_length=15)  # Field name made lowercase.
     fecha_modificacion = models.DateTimeField(db_column='Fecha_Modificacion')  # Field name made lowercase.
 
     class Meta:
         managed = False
         db_table = 'tbl_cliente'
+
 
 
 class TblClienteTipo(models.Model):
@@ -31,7 +32,7 @@ class TblClienteTipo(models.Model):
     creado_por = models.CharField(db_column='Creado_Por', max_length=15)  # Field name made lowercase.
     fecha_creacion = models.DateTimeField(db_column='Fecha_Creacion')  # Field name made lowercase.
     modificado_por = models.CharField(db_column='Modificado_Por', max_length=15)  # Field name made lowercase.
-    fceha_modificacion = models.DateTimeField(db_column='Fceha_Modificacion')  # Field name made lowercase.
+    fecha_modificacion = models.DateTimeField(db_column='Fecha_Modificacion')  # Field name made lowercase.
 
     class Meta:
         managed = False
@@ -187,6 +188,7 @@ class TblMsPermisos(models.Model):
 class TblMsPreguntas(models.Model):
     id_pregunta = models.BigIntegerField(db_column='Id_Pregunta', primary_key=True)  # Field name made lowercase.
     pregunta = models.CharField(db_column='Pregunta', max_length=100)  # Field name made lowercase.
+    estado = models.CharField(db_column='Estado', max_length=45)  # Field name made lowercase.
     creado_por = models.CharField(db_column='Creado_Por', max_length=15)  # Field name made lowercase.
     fecha_creacion = models.DateTimeField(db_column='Fecha_Creacion')  # Field name made lowercase.
     modificado_por = models.CharField(db_column='Modificado_Por', max_length=15)  # Field name made lowercase.
@@ -213,6 +215,7 @@ class TblMsPreguntasUsuario(models.Model):
 class TblMsRoles(models.Model):
     id_rol = models.BigIntegerField(db_column='Id_Rol', primary_key=True)  # Field name made lowercase.
     rol = models.CharField(db_column='Rol', max_length=30)  # Field name made lowercase.
+    estado = models.CharField(db_column='Estado', max_length=45)  # Field name made lowercase.
     descripcion = models.CharField(db_column='Descripcion', max_length=1000)  # Field name made lowercase.
     creado_por = models.CharField(db_column='Creado_Por', max_length=15)  # Field name made lowercase.
     fecha_creacion = models.DateTimeField(db_column='Fecha_Creacion')  # Field name made lowercase.

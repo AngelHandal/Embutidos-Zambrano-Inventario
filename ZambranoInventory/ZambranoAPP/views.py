@@ -1,9 +1,13 @@
 from django.shortcuts import render, redirect,get_object_or_404, redirect
 from django.contrib import messages
-from .models import TblMsUsuario, TblMsRoles, TblMsPreguntas,TblMsPreguntasUsuario
+from .models import TblMsUsuario, TblMsRoles, TblMsPreguntas,TblMsPreguntasUsuario,TblMsBitacora,TblMsObjetos, TblCliente, TblClienteTipo
 from django.utils import timezone
 from django.http import Http404,JsonResponse
 from django.db import IntegrityError
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseRedirect
+from django.urls import reverse
+from datetime import datetime
 
 
 
@@ -11,15 +15,14 @@ from django.db import IntegrityError
 def bienvenido(request):
     # Obtener el usuario de la sesión
     usuario = request.session.get('usuario')
+    
     # Si no hay usuario en la sesión, redirigir al login
     if not usuario:
         return redirect('login')
-    # Pasar los valores a la plantilla
-    context = {
-        'usuario': usuario,
-    }
-    # Renderizar la plantilla con los datos de contexto
-    return render(request, "bienvenido.html", context)
+    
+
+
+    return render(request, 'bienvenido.html', {'usuario': usuario})
 
 def actualizar_contrasena_por_preguntas(request):
     # obtenemos el usuario que nos interesa
@@ -51,11 +54,6 @@ def preguntas_seguridad_recuperar(request):
     return render(request, 'responde_pregunta.html', {"preguntas": preguntas, "usuario": usuario, "id_usuario": id_usuario, **context})
 
 
-
-
-
-
-
 def olvide_pass(request):
     usuario = None
     mensaje = None
@@ -76,44 +74,111 @@ def olvide_pass(request):
     return render(request, 'olvide_pass.html')
 
 
-
 def users_view(request):
-
-
-    usuarios = TblMsUsuario.objects.all()
-
     # Obtener el usuario de la sesión
     usuario = request.session.get('usuario')
     # Si no hay usuario en la sesión, redirigir al login
     if not usuario:
         return redirect('login')
+    
+    usuarios = TblMsUsuario.objects.all()
+
+    # Obtener el objeto del usuario a partir del nombre de usuario en la sesión
+    usuario_obj = TblMsUsuario.objects.get(usuario=usuario)
+    # Validar si existen datos en la tabla
+    if TblMsBitacora.objects.count() == 0:
+        nuevo_id_bitacora = 1
+    else:
+        # Obtener el último ID de la bitácora
+        ultimo_id_bitacora = TblMsBitacora.objects.order_by("-id_bitacora").first().id_bitacora
+        nuevo_id_bitacora = ultimo_id_bitacora + 1
+
+    # Obtener la instancia del objeto asociado
+    objeto = TblMsObjetos.objects.get(pk=1)
+    # Crear un registro en la tabla de bitácora
+    TblMsBitacora.objects.create(
+        id_bitacora=nuevo_id_bitacora,
+        id_usuario=usuario_obj,  # Usar la instancia del objeto del usuario
+        id_objeto=objeto,  # Puedes cambiar el ID del objeto según corresponda
+        fecha=datetime.now(),
+        accion='Usuarios',
+        descripcion='El usuario {} ha accedido a la pantalla lista de usuarios'.format(usuario),
+        creado_por=usuario,
+        fecha_creacion=datetime.now(),
+        modificado_por=usuario,
+        fecha_modificacion=datetime.now()
+    )
+
     # Pasar los valores a la plantilla
     #context = {
     #   'usuario': usuario,
     #}
     # Renderizar la plantilla con los datos de contexto
-    return render(request, "usuarios_view.html", {'usuarios': usuarios})
+    return render(request, "usuarios_view.html", {'usuarios': usuarios, 'usuario': usuario})
+
 
 def rols_view(request):
+    # Obtener el usuario de la sesión
+    usuario = request.session.get('usuario')
+    # Si no hay usuario en la sesión, redirigir al login
+    if not usuario:
+        return redirect('login')
     roles = TblMsRoles.objects.all()
-    return render(request, "roles_view.html", {'roles': roles} )
+        # Obtener el objeto del usuario a partir del nombre de usuario en la sesión
+    usuario_obj = TblMsUsuario.objects.get(usuario=usuario)
+    # Obtener el último ID de la bitácora
+    ultimo_id_bitacora = TblMsBitacora.objects.order_by("-id_bitacora").first().id_bitacora
+    nuevo_id_bitacora = ultimo_id_bitacora + 1
+
+    # Obtener la instancia del objeto asociado
+    objeto = TblMsObjetos.objects.get(pk=1)
+    # Crear un registro en la tabla de bitácora
+    TblMsBitacora.objects.create(
+        id_bitacora=nuevo_id_bitacora,
+        id_usuario=usuario_obj,  # Usar la instancia del objeto del usuario
+        id_objeto=objeto,  # Puedes cambiar el ID del objeto según corresponda
+        fecha=datetime.now(),
+        accion='Roles',
+        descripcion='El usuario {} ha accedido a la pantalla lista de roles'.format(usuario),
+        creado_por=usuario,
+        fecha_creacion=datetime.now(),
+        modificado_por=usuario,
+        fecha_modificacion=datetime.now()
+    )
+
+    return render(request, "roles_view.html", {'roles': roles, 'usuario': usuario} )
+
 
 def guardar_rol_editado(request, id):
+    # Obtener el usuario de la sesión
+    usuario = request.session.get('usuario')
+    # Si no hay usuario en la sesión, redirigir al login
+    if not usuario:
+        return redirect('login')
     rol = get_object_or_404(TblMsRoles, id_rol=id)
     if request.method == 'POST':
         rol.rol = request.POST['rol']
+        rol.estado = request.POST['estado']
         rol.descripcion = request.POST['descripcion']
-        rol.modificado_por = request.user.username
+        rol.modificado_por = usuario
         rol.fecha_modificacion = timezone.now()
         rol.save()
         return redirect('rols_views')
     else:
-        return render(request, 'editar_rol.html', {'rol': rol})
+        return render(request, 'editar_rol.html', {'rol': rol, 'usuario': usuario})
+
 
 def crear_rol(request):
+    # Obtener el usuario de la sesión
+    usuario = request.session.get('usuario')
+    # Si no hay usuario en la sesión, redirigir al login
+    if not usuario:
+        return redirect('login')
+    
     if request.method == 'POST':
         # obtener los datos del formulario
         rol = request.POST.get('rol')
+        estado = request.POST.get('estado')
         descripcion = request.POST.get('descripcion')
         #creado_por = request.user.username
         fecha_creacion = timezone.now()
@@ -124,10 +189,19 @@ def crear_rol(request):
         ultimo_rol = TblMsRoles.objects.order_by('-id_rol').first()
         nuevo_id = ultimo_rol.id_rol + 1 if ultimo_rol else 1
 
+        # Validar si existen datos en la tabla
+        if TblMsBitacora.objects.count() == 0:
+            nuevo_id_bitacora = 1
+        else:
+            # Obtener el último ID de la bitácora
+            ultimo_id_bitacora = TblMsBitacora.objects.order_by("-id_bitacora").first().id_bitacora
+            nuevo_id_bitacora = ultimo_id_bitacora + 1
+
         # crear un objeto TblMsRoles con los datos del formulario
         nuevo_rol = TblMsRoles(
             id_rol=nuevo_id,
             rol=rol,
+            estado = estado,
             descripcion=descripcion,
             creado_por=request.session.get('usuario'),
             fecha_creacion=fecha_creacion,
@@ -138,17 +212,46 @@ def crear_rol(request):
         # guardar el nuevo objeto en la base de datos
         nuevo_rol.save()
 
+                # Obtener el objeto del usuario a partir del nombre de usuario en la sesión
+        usuario_obj = TblMsUsuario.objects.get(usuario=usuario)
+        # Obtener el último ID de la bitácora
+        ultimo_id_bitacora = TblMsBitacora.objects.order_by("-id_bitacora").first().id_bitacora
+        nuevo_id_bitacora = ultimo_id_bitacora + 1
+
+        # Obtener la instancia del objeto asociado
+        objeto = TblMsObjetos.objects.get(pk=1)
+        # Crear un registro en la tabla de bitácora
+        TblMsBitacora.objects.create(
+            id_bitacora=nuevo_id_bitacora,
+            id_usuario=usuario_obj,  # Usar la instancia del objeto del usuario
+            id_objeto=objeto,  # Puedes cambiar el ID del objeto según corresponda
+            fecha=datetime.now(),
+            accion='Roles',
+            descripcion='El usuario {} ha creado un nuevo Rol'.format(usuario),
+            creado_por=usuario,
+            fecha_creacion=datetime.now(),
+            modificado_por=usuario,
+            fecha_modificacion=datetime.now()
+        )
+
         # redirigir a la página de detalles del nuevo rol creado
         return redirect('rols_views')
     else:
-        return render(request, 'crear_rol.html')
+        return render(request, 'crear_rol.html', {'usuario': usuario})
 
 
 
 def eliminar_rol(request, id):
+    # Obtener el usuario de la sesión
+    usuario = request.session.get('usuario')
+    # Si no hay usuario en la sesión, redirigir al login
+    if not usuario:
+        return redirect('login')
     try:
         rol = TblMsRoles.objects.get(id_rol=id)
-        rol.delete()
+        #rol.delete() No eliminaremos ningun rol
+        rol.estado = 'Inactivo'
+        rol.save()
         return redirect('rols_views')
     except IntegrityError:
         error_msg = 'Por favor, elimina los usuarios asignados a este rol primero'
@@ -160,17 +263,49 @@ def login(request):
     usuario = None
     contrasena = None
     mensaje = None
+    id_usuario = None  # agregar variable para id_usuario
+
     if request.method == "POST":
         usuario = request.POST['usuario']
         contrasena = request.POST['contraseña']
 
     # Buscar usuario y contraseña en la base de datos
     usuarios = TblMsUsuario.objects.filter(usuario=usuario, contrasena=contrasena)
-
+   
     # Si se encontró un usuario con la contraseña proporcionada
     if usuarios.exists():
         # Guardar el usuario en la sesión
         request.session['usuario'] = usuario
+        request.session['id_usuario'] = id_usuario
+
+        # Obtener el objeto del usuario a partir del nombre de usuario en la sesión
+        usuario_obj = TblMsUsuario.objects.get(usuario=usuario)
+        
+            # Validar si existen datos en la tabla
+        if TblMsBitacora.objects.count() == 0:
+            nuevo_id_bitacora = 1
+        else:
+            # Obtener el último ID de la bitácora
+            ultimo_id_bitacora = TblMsBitacora.objects.order_by("-id_bitacora").first().id_bitacora
+            nuevo_id_bitacora = ultimo_id_bitacora + 1
+
+        # Obtener la instancia del objeto asociado
+        objeto = TblMsObjetos.objects.get(pk=1)
+
+        # Crear un registro en la tabla de bitácora
+        TblMsBitacora.objects.create(
+            id_bitacora=nuevo_id_bitacora,
+            id_usuario=usuario_obj,  # Usar la instancia del objeto del usuario
+            id_objeto=objeto,  # Puedes cambiar el ID del objeto según corresponda
+            fecha=datetime.now(),
+            accion='Login',
+            descripcion='El usuario {} ha accedido al sistema'.format(usuario),
+            creado_por=usuario,
+            fecha_creacion=datetime.now(),
+            modificado_por=usuario,
+            fecha_modificacion=datetime.now()
+        )
+
         # Redirigir a la página de bienvenida
         return redirect('bienvenido')
     else:
@@ -205,8 +340,14 @@ def cerrar_sesion(request):
 
 
 def crear_usuario(request):
+        # Obtener el usuario de la sesión
+    usuario = request.session.get('usuario')
+    # Si no hay usuario en la sesión, redirigir al login
+    if not usuario:
+        return redirect('login')
     roles = TblMsRoles.objects.all()
     preguntas = TblMsPreguntas.objects.all()
+    
 
     if request.method == "POST":
         rol_id = request.POST.get("rol")
@@ -231,6 +372,32 @@ def crear_usuario(request):
             fecha_modificacion=timezone.now(),
         )
         usuario.save()
+
+        # Obtener el objeto del usuario a partir del nombre de usuario en la sesión
+        usuario_obj = TblMsUsuario.objects.get(usuario=usuario)
+        # Validar si existen datos en la tabla
+        if TblMsBitacora.objects.count() == 0:
+            nuevo_id_bitacora = 1
+        else:
+            # Obtener el último ID de la bitácora
+            ultimo_id_bitacora = TblMsBitacora.objects.order_by("-id_bitacora").first().id_bitacora
+            nuevo_id_bitacora = ultimo_id_bitacora + 1
+
+        # Obtener la instancia del objeto asociado
+        objeto = TblMsObjetos.objects.get(pk=1)
+        # Crear un registro en la tabla de bitácora
+        TblMsBitacora.objects.create(
+            id_bitacora=nuevo_id_bitacora,
+            id_usuario=usuario_obj,  # Usar la instancia del objeto del usuario
+            id_objeto=objeto,  # Puedes cambiar el ID del objeto según corresponda
+            fecha=datetime.now(),
+            accion='Usuarios',
+            descripcion='El usuario {} ha creado un nuevo usuario'.format(usuario),
+            creado_por=usuario,
+            fecha_creacion=datetime.now(),
+            modificado_por=usuario,
+            fecha_modificacion=datetime.now()
+        )
 
         # obtenemos las respuestas de las preguntas y las guardamos
         preguntas_usuario = []
@@ -260,4 +427,206 @@ def crear_usuario(request):
 
         messages.success(request, "Usuario creado con éxito.")
         return redirect("bienvenido")
-    return render(request, "crear_usuario.html", {"roles": roles, "preguntas": preguntas})
+    return render(request, "crear_usuario.html", {"roles": roles, "preguntas": preguntas, 'usuario': usuario})
+
+
+def ver_mas_usuario(request,id):
+    # Obtener el usuario de la sesión
+    usuario = request.session.get('usuario')
+    # Si no hay usuario en la sesión, redirigir al login
+    if not usuario:
+        return redirect('login')
+    
+        # Obtener el objeto usuario desde la variable
+    # en la sesión
+    usuario = get_object_or_404(TblMsUsuario, id_usuario=id)
+    
+
+    return render(request, "ver_mas_usuario.html", {'usuario': usuario})
+
+
+
+
+
+def editar_usuario(request, id):
+    # Obtener el usuario de la sesión
+    usuario = request.session.get('usuario')
+    # Si no hay usuario en la sesión, redirigir al login
+    if not usuario:
+        return redirect('login')
+    
+    # Obtener el objeto usuario desde la variable
+    # en la sesión
+    usuario = get_object_or_404(TblMsUsuario, id_usuario=id)
+
+    if request.method == 'POST':
+        # Actualizar los datos del usuario en la base de datos
+        usuario.usuario = request.POST.get('usuario')
+        usuario.nombre_usuario = request.POST.get('nombre_usuario')
+        usuario.estado_usuario = request.POST.get('estado_usuario')
+        usuario.contrasena = request.POST.get('contrasena')
+        usuario.fecha_ultima_conexion = timezone.now()
+        usuario.primer_ingreso = 1
+        usuario.fecha_vencimiento = request.POST.get('fecha_vencimiento')
+        usuario.correo_electronico = request.POST.get('correo_electronico')
+        usuario.creado_por = request.POST.get('creado_por')
+        usuario.fecha_creacion = timezone.now()
+        usuario.modificado_por = usuario
+        usuario.fecha_modificacion = timezone.now()
+        usuario.preguntas_contestadas = 1
+        usuario.save()
+        # Redirigir a la página de la lista de usuarios
+        return redirect('bienvenido')
+
+    return render(request, 'editar_usuario.html', {'usuario': usuario})
+
+def eliminar_usuario(request, id):
+    # Obtener el usuario de la sesión
+    usuario = request.session.get('usuario')
+    # Si no hay usuario en la sesión, redirigir al login
+    if not usuario:
+        return redirect('login')
+    try:
+        usuario = TblMsUsuario.objects.get(pk=id)
+        usuario.estado_usuario = 'Inactivo'
+        usuario.save()
+        messages.success(request, 'Usuario eliminado exitosamente')
+    except usuario.DoesNotExist:
+        messages.error(request, 'El usuario que intentas eliminar no existe')
+    return HttpResponseRedirect(reverse('user_views'))
+
+
+def preguntas(request):
+    # Obtener el usuario de la sesión
+    usuario = request.session.get('usuario')
+    # Si no hay usuario en la sesión, redirigir al login
+    if not usuario:
+        return redirect('login')
+    preguntas = TblMsPreguntas.objects.all()
+    # Obtener el objeto del usuario a partir del nombre de usuario en la sesión
+    usuario_obj = TblMsUsuario.objects.get(usuario=usuario)
+    # Validar si existen datos en la tabla
+    if TblMsBitacora.objects.count() == 0:
+        nuevo_id_bitacora = 1
+    else:
+        # Obtener el último ID de la bitácora
+        ultimo_id_bitacora = TblMsBitacora.objects.order_by("-id_bitacora").first().id_bitacora
+        nuevo_id_bitacora = ultimo_id_bitacora + 1
+
+    # Obtener la instancia del objeto asociado
+    objeto = TblMsObjetos.objects.get(pk=1)
+    # Crear un registro en la tabla de bitácora
+    TblMsBitacora.objects.create(
+        id_bitacora=nuevo_id_bitacora,
+        id_usuario=usuario_obj,  # Usar la instancia del objeto del usuario
+        id_objeto=objeto,  # Puedes cambiar el ID del objeto según corresponda
+        fecha=datetime.now(),
+        accion='Preguntas',
+        descripcion='El usuario {} ha accedido a la pantalla lista de Preguntas'.format(usuario),
+        creado_por=usuario,
+        fecha_creacion=datetime.now(),
+        modificado_por=usuario,
+        fecha_modificacion=datetime.now()
+    )
+    return render(request, 'preguntas_view.html', {'preguntas': preguntas, 'usuario': usuario})
+
+def crear_pregunta(request):
+    # Obtener el usuario de la sesión
+    usuario = request.session.get('usuario')
+    # Si no hay usuario en la sesión, redirigir al login
+    if not usuario:
+        return redirect('login')
+    if request.method == 'POST':
+        # Procesar los datos del formulario de creación de pregunta
+        pregunta = request.POST.get('pregunta')
+        estado = request.POST.get('estado')
+        creado_por = usuario
+        ultimo_id = TblMsPreguntas.objects.order_by("-id_pregunta").first().id_pregunta
+        nueva_id = ultimo_id + 1
+        nueva_pregunta = TblMsPreguntas(id_pregunta=nueva_id,pregunta=pregunta,estado=estado, creado_por=usuario, fecha_creacion=timezone.now(), modificado_por = usuario, fecha_modificacion= timezone.now() )
+        nueva_pregunta.save()
+
+        # Obtener el objeto del usuario a partir del nombre de usuario en la sesión
+        usuario_obj = TblMsUsuario.objects.get(usuario=usuario)
+        # Validar si existen datos en la tabla
+        if TblMsBitacora.objects.count() == 0:
+            nuevo_id_bitacora = 1
+        else:
+            # Obtener el último ID de la bitácora
+            ultimo_id_bitacora = TblMsBitacora.objects.order_by("-id_bitacora").first().id_bitacora
+            nuevo_id_bitacora = ultimo_id_bitacora + 1
+
+        # Obtener la instancia del objeto asociado
+        objeto = TblMsObjetos.objects.get(pk=1)
+        # Crear un registro en la tabla de bitácora
+        TblMsBitacora.objects.create(
+            id_bitacora=nuevo_id_bitacora,
+            id_usuario=usuario_obj,  # Usar la instancia del objeto del usuario
+            id_objeto=objeto,  # Puedes cambiar el ID del objeto según corresponda
+            fecha=datetime.now(),
+            accion='Roles',
+            descripcion='El usuario {} ha accedido a la pantalla lista de roles'.format(usuario),
+            creado_por=usuario,
+            fecha_creacion=datetime.now(),
+            modificado_por=usuario,
+            fecha_modificacion=datetime.now()
+        )
+        # Redirigir a la página de preguntas
+        return redirect('preguntas')
+    else:
+        # Mostrar el formulario de creación de pregunta
+        return render(request, 'crear_pregunta.html', {'usuario': usuario})
+
+def editar_pregunta(request, id_pregunta):
+     # Obtener el usuario de la sesión
+    usuario = request.session.get('usuario')
+    # Si no hay usuario en la sesión, redirigir al login
+    if not usuario:
+        return redirect('login')
+    pregunta = TblMsPreguntas.objects.get(id_pregunta=id_pregunta)
+    if request.method == 'POST':
+        # procesar datos del formulario
+        pregunta.pregunta = request.POST['pregunta']
+        pregunta.estado = request.POST['estado']
+        pregunta.modificado_por = usuario
+        pregunta.fecha_modificacion = timezone.now()
+        pregunta.save()
+        return redirect('preguntas')
+    else:
+        # mostrar formulario para editar
+        return render(request, 'editar_pregunta.html', {'pregunta': pregunta, 'usuario': usuario})
+
+
+def eliminar_pregunta(request, id):
+    # Obtener el usuario de la sesión
+    usuario = request.session.get('usuario')
+    # Si no hay usuario en la sesión, redirigir al login
+    if not usuario:
+        return redirect('login')
+    
+    #pregunta = get_object_or_404(TblMsPreguntas, id_pregunta=id)
+    pregunta = TblMsPreguntas.objects.get(id_pregunta=id)
+    #pregunta.delete()
+    pregunta.estado = 'Inactivo'
+    pregunta.save()
+
+    return redirect('preguntas')
+
+
+def ver_bitacora(request):
+    # Obtener el usuario de la sesión
+    usuario = request.session.get('usuario')
+    # Si no hay usuario en la sesión, redirigir al login
+    if not usuario:
+        return redirect('login')
+    
+    movimientos = TblMsBitacora.objects.all()
+
+    return render(request, "bitacora.html", {'movimientos':movimientos, 'usuario': usuario})
+
+
+def eliminar_bitacora(request):
+    #elimina todo mi historial
+    TblMsBitacora.objects.all().delete()
+    return redirect('bienvenido')
+

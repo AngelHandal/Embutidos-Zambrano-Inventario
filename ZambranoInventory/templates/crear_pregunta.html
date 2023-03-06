@@ -1,0 +1,23 @@
+{% extends 'base.html' %} {% block content %}
+<div class="container">
+  <h1 style="color:black; text-align:center;">Nueva pregunta</h1>
+  <form method="POST" class="row g-3">
+    {% csrf_token %}
+    <div class="col-md-12">
+      <label for="pregunta" class="form-label" style="color:black;">Pregunta</label>
+      <input type="text" name="pregunta" class="form-control" required />
+    </div></br>
+    <div class="col-md-12">
+      <label for="estado" style="color: black">Estado:</label>
+      <select class="form-control" name="estado" id="estado">
+        <option value="Activo">Activo</option>
+        <option value="Inactivo">Inactivo</option>
+      </select>
+    </div></br>
+    <div class="col-md-12">
+      <button type="submit" class="btn btn-primary">Guardar</button>
+      <a href="{% url 'preguntas' %}" class="btn btn-danger">Cancelar</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

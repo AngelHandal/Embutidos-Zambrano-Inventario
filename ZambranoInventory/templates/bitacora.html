@@ -34,45 +34,36 @@
 </style>
 <br /><br /><br /><br /><br />
 
-<a href="{% url 'crear_rol'  %}" class="btn btn-primary">Crear</a><br />
 <br />
-
+<div style="text-align: left">
+  <button
+    type="button"
+    class="btn btn-danger"
+    id="btn-eliminar"
+    style="height: 40px; width: 80px"
+  >
+    Depurar
+  </button>
+</div>
 <div class="table-responsive">
   <table class="table" style="width: 100%; text-align: center">
     <thead>
       <tr>
-        <th>Id</th>
-        <th>Rol</th>
-        <th>Estado</th>
+        <th>No</th>
+        <th>Accion</th>
         <th>Descripcion</th>
-        <th>Creado Por</th>
-        <th>Fecha Creacion</th>
-        <th>Modificado Por</th>
-        <th>Fecha Modificacion</th>
-        <th>Acciones</th>
+        <th>Fecha</th>
+        <th>Usuario</th>
       </tr>
     </thead>
     <tbody>
-      {% for rol in roles %}
+      {% for movimiento in movimientos %}
       <tr>
-        <td>{{ rol.id_rol }}</td>
-        <td>{{ rol.rol }}</td>
-        <td>{{ rol.estado }}</td>
-        <td>{{ rol.descripcion }}</td>
-        <td>{{ rol.creado_por }}</td>
-        <td>{{ rol.fecha_creacion }}</td>
-        <td>{{ rol.modificado_por }}</td>
-        <td>{{ rol.fecha_modificacion }}</td>
-        <td>
-          <a href="{% url 'editar_rol' rol.id_rol %}" class="btn btn-primary">
-            <i class="fas fa-pencil-alt"></i>
-            <!-- Icono de lápiz de Font Awesome -->
-          </a>
-          <a href="{% url 'eliminar_rol' rol.id_rol %}" class="btn btn-danger">
-            <i class="fas fa-trash-alt"></i>
-            <!-- Icono de basurero de Font Awesome -->
-          </a>
-        </td>
+        <td>{{ movimiento.id_bitacora }}</td>
+        <td>{{ movimiento.accion }}</td>
+        <td>{{ movimiento.descripcion }}</td>
+        <td>{{ movimiento.fecha_creacion }}</td>
+        <td>{{ usuario }}</td>
       </tr>
       {% endfor %}
     </tbody>
@@ -94,6 +85,30 @@
   //volver al menu principal
   document.getElementById("btn-volver").addEventListener("click", function () {
     window.location.href = "{% url 'bienvenido' %}";
+  });
+
+  const btnEliminar = document.querySelector("#btn-eliminar");
+
+  // Eliminar toda la bitácora
+  btnEliminar.addEventListener("click", function () {
+    fetch("/bitacora/eliminar/", {
+      method: "POST",
+      headers: {
+        "X-CSRFToken": "{{ csrf_token }}",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({}),
+    })
+      .then((response) => {
+        if (response.ok) {
+          window.location.href = "/bitacora/";
+        } else {
+          throw new Error("Ocurrió un error al eliminar la bitácora");
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   });
 </script>
 {% endblock %}

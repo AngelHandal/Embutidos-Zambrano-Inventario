@@ -1,0 +1,54 @@
+{% extends 'base.html' %} {% block content %}
+<style>
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p {
+    text-align: center;
+    color: black;
+    text-decoration: none;
+  }
+  .contenedor {
+    background-color: #bfbfbf19;
+    border: 1px solid black;
+    padding: 10px;
+    border-radius: 2px;
+    width: 500px;
+    margin: 0 auto;
+    }
+
+    .btn {
+    display: block;
+    margin: 0 auto;
+    }
+</style></br></br>
+<div class="contenedor" >
+  <h1>{{usuario.nombre_usuario}}</h1>
+  <p><strong>Id:</strong> {{usuario.id_usuario}}</p>
+  <p><strong>Rol:</strong> {{usuario.id_rol.rol}}</p>
+  <p><strong>Usuario:</strong> {{usuario.usuario}}</p>
+  <p><strong>Nombre:</strong> {{usuario.nombre_usuario}}</p>
+  <p><strong>Estado:</strong> {{usuario.estado_usuario}}</p>
+  <p><strong>Contrasena:</strong> {{usuario.contrasena}}</p>
+  <p><strong>Ultima Conexion:</strong> {{usuario.fecha_ultima_conexion}}</p>
+  <p><strong>Primer Ingreso:</strong> {{usuario.primer_ingreso}}</p>
+  <p><strong>Vencimiento:</strong> {{usuario.fecha_vencimiento}}</p>
+  <p><strong>Correo:</strong> {{usuario.correo_electronico}}</p>
+  <p><strong>Creado por:</strong> {{usuario.creado_por}}</p>
+  <p><strong>Fecha de creacion:</strong> {{usuario.fecha_creacion}}</p>
+  <p><strong>Modificado por:</strong> {{usuario.modificado_por}}</p>
+  <p><strong>Ultima Modificacion:</strong> {{usuario.fecha_modificacion}}</p>
+  <p><strong>Preguntas:</strong> {{usuario.preguntas_contestadas}}</p>
+  <button type="button" class="btn btn-danger" id="btn-volver" >
+    Volver
+  </button>
+</div>
+<script>
+    document.getElementById("btn-volver").addEventListener("click", function () {
+      window.location.href = "{% url 'user_views' %}";
+    });
+  </script>
+{% endblock %}
