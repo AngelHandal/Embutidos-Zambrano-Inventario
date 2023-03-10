@@ -1,0 +1,57 @@
+{% extends 'base.html' %} {% block content %}
+<style>
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p {
+    text-align: center;
+    color: black;
+    text-decoration: none;
+  }
+  .contenedor {
+    background-color: #bfbfbf19;
+    border: 1px solid black;
+    padding: 10px;
+    border-radius: 2px;
+    width: 500px;
+    margin: 0 auto;
+    }
+
+    .btn {
+    display: block;
+    margin: 0 auto;
+    }
+</style></br></br>
+
+<div class="contenedor" >
+  <h1>{{cliente.nombre}}</h1>
+  <p><strong>Id:</strong> {{cliente.id_cliente}}</p>
+  <p><strong>Identidad:</strong> {{cliente.identidad}}</p>
+  <p><strong>RTN:</strong> {{cliente.rtn}}</p>
+  <p><strong>Tipo:</strong> {{cliente.id_tipocliente.descripcion}}</p>
+  <p><strong>Estado:</strong> {{cliente.estado}}</p>
+  <p><strong>Direccion:</strong> {{cliente.direccion}}</p>
+  <p><strong>Telefono 1:</strong> {{cliente.telefono1}}</p>
+  <p><strong>Telefono 2:</strong> {{cliente.telefono2}}</p>
+  <p><strong>Correo:</strong> {{cliente.correo_electronico}}</p>
+  <p><strong>Descripcion:</strong> {{cliente.descripcion}}</p>
+  <p><strong>Fecha:</strong> {{cliente.fecha}}</p>
+  <p><strong>Creado Por:</strong> {{cliente.creado_por}}</p>
+  <p><strong>Fecha Creacion:</strong> {{cliente.fecha_creacion}}</p>
+  <p><strong>Fecha Modificacion:</strong> {{cliente.fecha_modificacion}}</p>
+
+
+  
+  <button type="button" class="btn btn-danger" id="btn-volver" >
+    Volver
+  </button>
+</div>
+<script>
+    document.getElementById("btn-volver").addEventListener("click", function () {
+      window.location.href = "{% url 'mostrar_clientes' %}";
+    });
+  </script>
+{% endblock %}

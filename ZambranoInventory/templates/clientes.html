@@ -1,0 +1,185 @@
+{% extends 'base.html' %} {% block content %}
+<style>
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    text-decoration: none;
+  }
+
+  table,
+  th,
+  td {
+    border: 3px solid black;
+  }
+
+  th,
+  td {
+    text-align: center;
+    padding: 8px;
+  }
+
+  th {
+    background-color: #171717;
+    color: rgb(255, 255, 255);
+  }
+
+  tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+
+  .table {
+    width: 100%;
+    white-space: nowrap;
+  }
+
+  .table-responsive {
+    overflow-x: auto;
+    width: 100%;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    color: none;
+  }
+
+  /* NUEVO CSS PARA EL FILTRO */
+  #filtro-container {
+    float: right;
+    margin: 20px 0 20px 20px;
+    display: flex;
+    align-items: center;
+  }
+
+  #filtro-container > * {
+    margin-right: 20px;
+  }
+</style>
+
+<br />
+<div id="filtro-container">
+  <label for="filtro" style="color: black">Filtrar:</label>
+  <input
+    type="text"
+    id="filtro"
+    onkeyup="filtrarTabla()"
+    placeholder="Buscar por nombre..."
+  />
+</div>
+<a href="{% url 'crear_clientes'  %}" class="btn btn-primary">Crear</a><br />
+<div class="table-responsive">
+  <h1 style="color: black; text-align: center">Clientes</h1>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Tipo</th>
+        <th>Nombre</th>
+        <th>Dirección</th>
+        <th>Teléfono 1</th>
+        <th>Correo electrónico</th>
+        <th>Fecha</th>
+        <th>Identidad</th>
+        <th>RTN</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for cliente in clientes %}
+      <tr>
+        <td>{{ cliente.id_cliente }}</td>
+        <td>{{ cliente.id_tipocliente.descripcion }}</td>
+        <td>{{ cliente.nombre }}</td>
+        <td>{{ cliente.direccion }}</td>
+        <td>{{ cliente.telefono1 }}</td>
+        <td>{{ cliente.correo_electronico }}</td>
+        <td>{{ cliente.fecha }}</td>
+        <td>{{ cliente.identidad }}</td>
+        <td>{{ cliente.rtn }}</td>
+
+        <td>
+          <a
+            href="{% url 'editar_cliente' cliente.id_cliente %}"
+            class="btn btn-primary"
+          >
+            <i class="fas fa-pencil-alt"></i>
+            <!-- Icono de lápiz de Font Awesome --></a
+          >
+          <a href="#" class="btn btn-danger">
+            <i class="fas fa-trash-alt"></i>
+            <!-- Icono de basurero de Font Awesome -->
+          </a>
+          <a
+            href="{% url 'ver_mas_clientes' cliente.id_cliente %}"
+            class="btn btn-secondary"
+          >
+            <i class="zmdi zmdi-plus"></i>
+            <!-- Icono de basurero de Font Awesome -->
+          </a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <!-- Agregar los botones de navegación de la paginación -->
+  <div class="pagination">
+    <span class="step-links">
+      {% if clientes.has_previous %}
+      <a href="?page=1">&laquo; Primera</a>
+      <a href="?page={{ clientes.previous_page_number }}">Anterior</a>
+      {% endif %}
+      <span class="current-page">
+        Página {{ clientes.number }} de {{ clientes.paginator.num_pages }}
+      </span>
+
+      {% if clientes.has_next %}
+      <a href="?page={{ clientes.next_page_number }}">Siguiente</a>
+      <a href="?page={{ clientes.paginator.num_pages }}">Última &raquo;</a>
+      {% endif %}
+    </span>
+  </div>
+</div>
+<div style="text-align: center">
+  <button
+    type="button"
+    class="btn btn-primary"
+    id="btn-volver"
+    style="height: 70px"
+  >
+    Volver
+  </button>
+</div>
+<script>
+  //volver al menu principal
+  document.getElementById("btn-volver").addEventListener("click", function () {
+    window.location.href = "{% url 'bienvenido' %}";
+  });
+
+  function filtrarTabla() {
+    // Obtenemos el valor del input
+    var filtro = document.getElementById("filtro").value.toUpperCase();
+
+    // Obtenemos la tabla y las filas
+    var tabla = document.querySelector(".table");
+    var filas = tabla.getElementsByTagName("tr");
+
+    // Recorremos todas las filas de la tabla y ocultamos las que no coinciden con el filtro
+    for (var i = 0; i < filas.length; i++) {
+      var celdaNombre = filas[i].getElementsByTagName("td")[2];
+      if (celdaNombre) {
+        var textoCelda = celdaNombre.textContent || celdaNombre.innerText;
+        if (textoCelda.toUpperCase().indexOf(filtro) > -1) {
+          filas[i].style.display = "";
+        } else {
+          filas[i].style.display = "none";
+        }
+      }
+    }
+  }
+</script>
+
+{% endblock %}

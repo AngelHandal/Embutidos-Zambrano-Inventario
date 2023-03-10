@@ -14,6 +14,7 @@ class TblCliente(models.Model):
     identidad = models.CharField(db_column='Identidad', max_length=100)  # Field name made lowercase.
     rtn = models.CharField(db_column='RTN', max_length=100)  # Field name made lowercase.
     descripcion = models.CharField(db_column='Descripcion', max_length=1000)  # Field name made lowercase.
+    estado = models.CharField(db_column='Estado', max_length=45)  # Field name made lowercase.
     creado_por = models.CharField(db_column='Creado_Por', max_length=15)  # Field name made lowercase.
     fecha_creacion = models.DateTimeField(db_column='Fecha_Creacion')  # Field name made lowercase.
     modificado_por = models.CharField(db_column='Modificado_Por', max_length=15)  # Field name made lowercase.

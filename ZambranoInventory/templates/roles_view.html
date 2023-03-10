@@ -5,7 +5,6 @@
     height: 100%;
   }
   body {
-    font-family: Teko, sans-serif;
     background: radial-gradient(circle at top, #ffbb00, #e61414);
     background-size: cover;
     color: black;
@@ -17,7 +16,7 @@
   table,
   td {
     border: 1px solid black;
-    font-family: Teko, sans-serif;
+
     color: rgb(0, 0, 0);
     background-color: rgba(
       255,
@@ -32,13 +31,24 @@
     border: none;
   }
 </style>
-<br /><br /><br /><br /><br />
+<br /><br />
+<h2 style="color: black; text-align: center; text-decoration: none">
+  <strong>Roles</strong>
+</h2>
+<div id="filtro-container" style="text-align: right; padding-top: 0px">
+  <label for="filtro" style="color: black">Filtrar:</label>
+  <input
+    type="text"
+    id="filtro"
+    onkeyup="filtrarTabla()"
+    placeholder="Buscar por nombre..."
+  />
+</div>
+<a href="{% url 'crear_rol'  %}" class="btn btn-primary">Crear</a><br /><br />
 
-<a href="{% url 'crear_rol'  %}" class="btn btn-primary">Crear</a><br />
-<br />
-
+<br /><br /><br />
 <div class="table-responsive">
-  <table class="table" style="width: 100%; text-align: center">
+  <table class="table" style="width: 100%; text-align: center" id="tabla-roles">
     <thead>
       <tr>
         <th>Id</th>
@@ -77,6 +87,23 @@
       {% endfor %}
     </tbody>
   </table>
+  <!-- Agregar los botones de navegación de la paginación -->
+  <div class="pagination">
+    <span class="step-links">
+      {% if roles.has_previous %}
+      <a href="?page=1">&laquo; Primera</a>
+      <a href="?page={{ roles.previous_page_number }}">Anterior</a>
+      {% endif %}
+      <span class="current-page">
+        Página {{ roles.number }} de {{ roles.paginator.num_pages }}
+      </span>
+
+      {% if roles.has_next %}
+      <a href="?page={{ roles.next_page_number }}">Siguiente</a>
+      <a href="?page={{ roles.paginator.num_pages }}">Última &raquo;</a>
+      {% endif %}
+    </span>
+  </div>
   <div style="text-align: center">
     <button
       type="button"
@@ -90,10 +117,58 @@
 </div>
 <script>
   const btnVolver = document.querySelector("#btn-volver");
+  const inputFiltro = document.querySelector("#filtro");
+  const btnActivos = document.querySelector("#btn-activos");
+  const btnInactivos = document.querySelector("#btn-inactivos");
+  const btnTodos = document.querySelector("#btn-todos");
 
   //volver al menu principal
   document.getElementById("btn-volver").addEventListener("click", function () {
     window.location.href = "{% url 'bienvenido' %}";
   });
+
+  // Obtener la tabla
+  const tablaRoles = document.querySelector("#tabla-roles");
+
+  // Agregar un event listener a cada botón
+  btnActivos.addEventListener("click", () => filtrarUsuarios("Activo"));
+  btnInactivos.addEventListener("click", () => filtrarUsuarios("Inactivo"));
+  btnTodos.addEventListener("click", () => filtrarUsuarios(null));
+
+  // Función para filtrar los usuarios
+  function filtrarUsuarios(rol) {
+    // Recorrer todas las filas de la tabla
+    for (let i = 0; i < tablaRoles.rows.length; i++) {
+      const row = tablaRoles.rows[i];
+
+      // Si la columna de estado no coincide con el estado seleccionado y no es la fila de encabezado, ocultar la fila
+      if (rol && row.cells[4].textContent !== rol && i !== 0) {
+        row.style.display = "none";
+      } else {
+        row.style.display = "";
+      }
+    }
+  }
+
+  inputFiltro.addEventListener("input", () =>
+    filtrarNombres(inputFiltro.value)
+  );
+
+  function filtrarNombres(nombre) {
+    const filas = tablaRoles.getElementsByTagName("tr");
+    for (let i = 0; i < filas.length; i++) {
+      const celdas = filas[i].getElementsByTagName("td");
+      let mostrarFila = false;
+      for (let j = 0; j < celdas.length; j++) {
+        if (
+          celdas[j].textContent.toUpperCase().indexOf(nombre.toUpperCase()) > -1
+        ) {
+          mostrarFila = true;
+          break;
+        }
+      }
+      filas[i].style.display = mostrarFila ? "" : "none";
+    }
+  }
 </script>
 {% endblock %}

@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from datetime import datetime
-
+from django.core.paginator import Paginator
 
 
 
@@ -82,6 +82,10 @@ def users_view(request):
         return redirect('login')
     
     usuarios = TblMsUsuario.objects.all()
+         # Agregar paginación
+    paginator = Paginator(usuarios, 5) # Mostrar 5 registros por página
+    page = request.GET.get('page')
+    usuarios = paginator.get_page(page)
 
     # Obtener el objeto del usuario a partir del nombre de usuario en la sesión
     usuario_obj = TblMsUsuario.objects.get(usuario=usuario)
@@ -124,11 +128,21 @@ def rols_view(request):
     if not usuario:
         return redirect('login')
     roles = TblMsRoles.objects.all()
+
+    # Agregar paginación
+    paginator = Paginator(roles, 5) # Mostrar 5 registros por página
+    page = request.GET.get('page')
+    roles = paginator.get_page(page)
+
         # Obtener el objeto del usuario a partir del nombre de usuario en la sesión
     usuario_obj = TblMsUsuario.objects.get(usuario=usuario)
-    # Obtener el último ID de la bitácora
-    ultimo_id_bitacora = TblMsBitacora.objects.order_by("-id_bitacora").first().id_bitacora
-    nuevo_id_bitacora = ultimo_id_bitacora + 1
+    # Validar si existen datos en la tabla
+    if TblMsBitacora.objects.count() == 0:
+        nuevo_id_bitacora = 1
+    else:
+        # Obtener el último ID de la bitácora
+        ultimo_id_bitacora = TblMsBitacora.objects.order_by("-id_bitacora").first().id_bitacora
+        nuevo_id_bitacora = ultimo_id_bitacora + 1
 
     # Obtener la instancia del objeto asociado
     objeto = TblMsObjetos.objects.get(pk=1)
@@ -348,12 +362,14 @@ def crear_usuario(request):
     roles = TblMsRoles.objects.all()
     preguntas = TblMsPreguntas.objects.all()
     
+    ultimo_id = TblMsUsuario.objects.order_by("-id_usuario").first().id_usuario
+    nuevo_id = ultimo_id + 1
+    
 
     if request.method == "POST":
         rol_id = request.POST.get("rol")
         rol = TblMsRoles.objects.get(pk=rol_id)
-        ultimo_id = TblMsUsuario.objects.order_by("-id_usuario").first().id_usuario
-        nuevo_id = ultimo_id + 1
+        
         usuario = TblMsUsuario(
             id_usuario=nuevo_id,
             usuario=request.POST.get("usuario"),
@@ -372,9 +388,9 @@ def crear_usuario(request):
             fecha_modificacion=timezone.now(),
         )
         usuario.save()
-
+        id_usuario = usuario.id_usuario
         # Obtener el objeto del usuario a partir del nombre de usuario en la sesión
-        usuario_obj = TblMsUsuario.objects.get(usuario=usuario)
+        usuario_obj = TblMsUsuario.objects.get(id_usuario=id_usuario)
         # Validar si existen datos en la tabla
         if TblMsBitacora.objects.count() == 0:
             nuevo_id_bitacora = 1
@@ -388,14 +404,14 @@ def crear_usuario(request):
         # Crear un registro en la tabla de bitácora
         TblMsBitacora.objects.create(
             id_bitacora=nuevo_id_bitacora,
-            id_usuario=usuario_obj,  # Usar la instancia del objeto del usuario
+            id_usuario=TblMsUsuario.objects.get(id_usuario=id_usuario),  # Usar la instancia del objeto del usuario
             id_objeto=objeto,  # Puedes cambiar el ID del objeto según corresponda
             fecha=datetime.now(),
             accion='Usuarios',
-            descripcion='El usuario {} ha creado un nuevo usuario'.format(usuario),
-            creado_por=usuario,
+            descripcion='El usuario {} ha creado un nuevo usuario'.format(request.session.get('usuario')),
+            creado_por=usuario.nombre_usuario,
             fecha_creacion=datetime.now(),
-            modificado_por=usuario,
+            modificado_por=usuario.nombre_usuario,
             fecha_modificacion=datetime.now()
         )
 
@@ -445,9 +461,6 @@ def ver_mas_usuario(request,id):
     return render(request, "ver_mas_usuario.html", {'usuario': usuario})
 
 
-
-
-
 def editar_usuario(request, id):
     # Obtener el usuario de la sesión
     usuario = request.session.get('usuario')
@@ -471,7 +484,7 @@ def editar_usuario(request, id):
         usuario.correo_electronico = request.POST.get('correo_electronico')
         usuario.creado_por = request.POST.get('creado_por')
         usuario.fecha_creacion = timezone.now()
-        usuario.modificado_por = usuario
+        usuario.modificado_por = request.session.get('usuario')
         usuario.fecha_modificacion = timezone.now()
         usuario.preguntas_contestadas = 1
         usuario.save()
@@ -502,7 +515,15 @@ def preguntas(request):
     # Si no hay usuario en la sesión, redirigir al login
     if not usuario:
         return redirect('login')
+    
     preguntas = TblMsPreguntas.objects.all()
+
+     # Agregar paginación
+    paginator = Paginator(preguntas, 5) # Mostrar 5 registros por página
+    page = request.GET.get('page')
+    preguntas = paginator.get_page(page)
+
+
     # Obtener el objeto del usuario a partir del nombre de usuario en la sesión
     usuario_obj = TblMsUsuario.objects.get(usuario=usuario)
     # Validar si existen datos en la tabla
@@ -621,6 +642,10 @@ def ver_bitacora(request):
         return redirect('login')
     
     movimientos = TblMsBitacora.objects.all()
+             # Agregar paginación
+    paginator = Paginator(movimientos, 5) # Mostrar 5 registros por página
+    page = request.GET.get('page')
+    movimientos = paginator.get_page(page)
 
     return render(request, "bitacora.html", {'movimientos':movimientos, 'usuario': usuario})
 
@@ -630,3 +655,136 @@ def eliminar_bitacora(request):
     TblMsBitacora.objects.all().delete()
     return redirect('bienvenido')
 
+def mostrar_clientes(request):
+        # Obtener el usuario de la sesión
+    usuario = request.session.get('usuario')
+    # Si no hay usuario en la sesión, redirigir al login
+    if not usuario:
+        return redirect('login')
+
+    clientes = TblCliente.objects.all()
+
+         # Agregar paginación
+    paginator = Paginator(clientes, 5) # Mostrar 5 registros por página
+    page = request.GET.get('page')
+    clientes = paginator.get_page(page)
+
+    usuario_obj = TblMsUsuario.objects.get(usuario=usuario)
+    # Validar si existen datos en la tabla
+    if TblMsBitacora.objects.count() == 0:
+        nuevo_id_bitacora = 1
+    else:
+        # Obtener el último ID de la bitácora
+        ultimo_id_bitacora = TblMsBitacora.objects.order_by("-id_bitacora").first().id_bitacora
+        nuevo_id_bitacora = ultimo_id_bitacora + 1
+
+    # Obtener la instancia del objeto asociado
+    objeto = TblMsObjetos.objects.get(pk=1)
+    # Crear un registro en la tabla de bitácora
+    TblMsBitacora.objects.create(
+        id_bitacora=nuevo_id_bitacora,
+        id_usuario=usuario_obj,  # Usar la instancia del objeto del usuario
+        id_objeto=objeto,  # Puedes cambiar el ID del objeto según corresponda
+        fecha=datetime.now(),
+        accion='Clientes',
+        descripcion='El usuario {} ha accedido a la pantalla lista de clientes'.format(usuario),
+        creado_por=usuario,
+        fecha_creacion=datetime.now(),
+        modificado_por=usuario,
+        fecha_modificacion=datetime.now()
+    )
+    return render(request, 'clientes.html', {'clientes': clientes, 'usuario': usuario})
+    
+
+def ver_mas_clientes(request,id):
+    # Obtener el usuario de la sesión
+    usuario = request.session.get('usuario')
+    # Si no hay usuario en la sesión, redirigir al login
+    if not usuario:
+        return redirect('login')
+    
+    # Obtener el objeto usuario desde la variable
+    # en la sesión
+    cliente = get_object_or_404(TblCliente, id_cliente=id)
+    
+
+    return render(request, "ver_mas_clientes.html", {'cliente': cliente, 'usuario': usuario})
+
+
+def crear_cliente(request):
+    # Obtener el usuario de la sesión
+    usuario = request.session.get('usuario')
+    # Si no hay usuario en la sesión, redirigir al login
+    if not usuario:
+        return redirect('login')
+    
+    #rol_id = request.POST.get("rol")
+    #rol = TblCliente.objects.get(pk=rol_id)
+    clientes = TblCliente.objects.all()
+    ultimo_id = TblCliente.objects.order_by("-id_cliente").first().id_cliente
+
+    #tipocliente = TblClienteTipo.objects.get(pk=request.POST.get("id_tipocliente"))
+    
+    if request.method == "POST":
+        cliente = TblCliente(
+                id_cliente=ultimo_id + 1,
+                id_tipocliente=TblClienteTipo.objects.get(pk=request.POST.get("id_tipocliente")),
+                nombre=request.POST.get("nombre"),
+                direccion=request.POST.get("direccion"),
+                telefono1=request.POST.get("telefono1"),
+                telefono2=request.POST.get("telefono2"),
+                correo_electronico=request.POST.get("correo_electronico"),
+                fecha = timezone.now(),
+                identidad=request.POST.get("identidad"),
+                rtn=request.POST.get("rtn"),
+                descripcion=request.POST.get("descripcion"),
+                creado_por = usuario,
+                fecha_creacion=timezone.now(),
+                modificado_por = usuario,
+                fecha_modificacion = timezone.now(),
+            )
+        cliente.save()
+        return redirect("mostrar_clientes")
+    return render(request, "crear_cliente.html", {'usuario': usuario, 'clientes': clientes})
+
+
+def editar_cliente(request,id):
+
+     # Obtener el usuario de la sesión
+    usuario = request.session.get('usuario')
+    # Si no hay usuario en la sesión, redirigir al login
+    if not usuario:
+        return redirect('login')
+    
+    # Obtener el objeto usuario desde la variable
+    # en la sesión
+
+
+    #tipocliente = TblClienteTipo.objects.get(pk=int(request.POST.get("id_tipocliente")))
+    cliente = get_object_or_404(TblCliente, id_cliente=id)
+
+    #tipocliente = TblClienteTipo.objects.get(pk=request.POST.get("id_tipocliente"))
+
+    if request.method == "POST":
+            cliente = TblCliente(
+                    id_cliente=cliente.id_cliente,
+                    id_tipocliente=cliente.id_tipocliente,
+                    nombre=request.POST.get("nombre"),
+                    direccion=request.POST.get("direccion"),
+                    telefono1=request.POST.get("telefono1"),
+                    telefono2=request.POST.get("telefono2"),
+                    correo_electronico=request.POST.get("correo_electronico"),
+                    fecha = timezone.now(),
+                    identidad=request.POST.get("identidad"),
+                    rtn=request.POST.get("rtn"),
+                    descripcion=request.POST.get("descripcion"),
+                    creado_por = usuario,
+                    fecha_creacion=timezone.now(),
+                    modificado_por = usuario,
+                    fecha_modificacion = timezone.now(),
+                )
+            cliente.save()
+            # Redirigir a la página de la lista de usuarios
+            return redirect('bienvenido')
+
+    return render(request, 'editar_cliente.html', {'usuario': usuario, 'cliente': cliente})

@@ -1,0 +1,143 @@
+{% extends 'base.html' %} {% block content %}
+<br /><br /><br /><br /><br /><br />
+<div class="container">
+  <div class="row">
+    <div class="col-md-8 col-lg-6 mx-auto">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="card-title" style="text-align: center; color: black">
+            Editar Cliente
+          </h4>
+        </div>
+        <div class="card-body">
+          <form method="post">
+            {% csrf_token %}
+
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="nombre" style="color: black">Nombre:</label>
+                <input
+                  type="text"
+                  name="nombre"
+                  id="nombre"
+                  value="{{ cliente.nombre }}"
+                  class="form-control"
+                  required
+                />
+              </div>
+              <div class="form-group col-md-6">
+                <label for="identidad" style="color: black">Identidad:</label>
+                <input
+                  type="text"
+                  name="identidad"
+                  id="identidad"
+                  value="{{ cliente.identidad }}"
+                  class="form-control"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="RTN" style="color: black">RTN:</label>
+                <input
+                  type="text"
+                  name="rtn"
+                  id="rtn"
+                  value="{{ cliente.rtn }}"
+                  class="form-control"
+                  required
+                />
+              </div>
+
+              <div class="form-group col-md-6">
+                <label for="correo_electronico" style="color: black"
+                  >Correo Electronico:</label
+                >
+                <div class="input-group">
+                  <input
+                    type="email"
+                    name="correo_electronico"
+                    id="correo_electronico"
+                    value="{{ cliente.correo_electronico }}"
+                    class="form-control"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="telefono1" style="color: black">Telefono 1:</label>
+                <input
+                  type="text"
+                  name="telefono1"
+                  id="telefono1"
+                  value="{{ cliente.telefono1 }}"
+                  class="form-control"
+                  required
+                />
+              </div>
+
+              <div class="form-group col-md-6">
+                <label for="telefono2" style="color: black">Telefono 2:</label>
+                <input
+                  type="text"
+                  name="telefono2"
+                  id="telefeno2"
+                  value="{{ cliente.telefono2 }}"
+                  class="form-control"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group col-md-6">
+                <label for="descripcion" style="color: black"
+                  >Descripcion:</label
+                >
+                <input
+                  type="text"
+                  name="descripcion"
+                  id="descripcion"
+                  value="{{ cliente.descripcion }}"
+                  class="form-control"
+                  required
+                />
+              </div>
+
+              <div class="form-group col-md-6">
+                <label for="direccion" style="color: black">Direccion:</label>
+                <input
+                  type="text"
+                  name="direccion"
+                  id="direccion"
+                  value="{{ cliente.direccion }}"
+                  class="form-control"
+                  required
+                />
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Editar</button>
+            <button type="button" class="btn btn-danger" id="btn-cancelar">
+              Cancelar
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document
+    .getElementById("btn-cancelar")
+    .addEventListener("click", function () {
+      window.location.href = "{% url 'bienvenido' %}";
+    });
+</script>
+{% endblock %}

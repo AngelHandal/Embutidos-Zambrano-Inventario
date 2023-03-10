@@ -17,6 +17,13 @@
   .row {
     padding-top: 25px;
   }
+  .tile-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
 
 </style>
 <!-- PAGINA PRINCIPAL -->
@@ -28,7 +35,9 @@
     <div class="tile-text">
       <span class="text-condensedLight">
         <br />
-        <small style="color:black; "><strong>Compras</strong></small>
+        <a href="#">
+          <small style="color:black; font-size:20px"><strong>Compras</strong></small>
+        </a>
       </span>
     </div>
     <i class="zmdi zmdi-balance tile-icon"></i>
@@ -37,7 +46,9 @@
     <div class="tile-text">
       <span class="text-condensedLight">
         <br />
-        <small style="color:black"><strong> Clientes</strong></small>
+        <a href="{% url 'mostrar_clientes' %}">
+          <small style="color:black; font-size:20px"><strong>Clientes</strong></small>
+        </a>
       </span>
     </div>
     <i class="zmdi zmdi-accounts tile-icon"></i>
@@ -46,7 +57,9 @@
     <div class="tile-text">
       <span class="text-condensedLight">
         <br />
-        <small style="color:black"><strong>Proveedores</strong></small>
+        <a href="#">
+          <small style="color:black; font-size:20px"><strong>Proveedores</strong></small>
+        </a>
       </span>
     </div>
     <i class="zmdi zmdi-truck tile-icon"></i>
@@ -55,7 +68,9 @@
     <div class="tile-text">
       <span class="text-condensedLight">
         <br />
-        <small style="color:black"><strong>Inventario</strong></small>
+        <a href="#">
+          <small style="color:black; font-size:20px"><strong>Inventario</strong></small>
+        </a>
       </span>
     </div>
     <i class="zmdi zmdi-store tile-icon"></i>
@@ -64,7 +79,9 @@
     <div class="tile-text">
       <span class="text-condensedLight">
         <br />
-        <small style="color:black"><strong>Productos</strong></small>
+        <a href="#">
+          <small style="color:black; font-size:20px"><strong>Productos</strong></small>
+        </a>
       </span>
     </div>
     <i class="zmdi zmdi-folder tile-icon"></i>
@@ -73,7 +90,9 @@
     <div class="tile-text">
       <span class="text-condensedLight">
         <br />
-        <small style="color:black"><strong>Ventas</strong></small>
+        <a href="#">
+          <small style="color:black; font-size:20px"><strong>Ventas</strong></small>
+        </a>
       </span>
     </div>
     <i class="zmdi zmdi-money tile-icon"></i>

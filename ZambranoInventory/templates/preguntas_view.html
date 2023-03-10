@@ -1,10 +1,43 @@
 {% extends 'base.html' %} {% block content %}
-<div class="container">
+
+<style>
+  th {
+    background-color: #171717;
+    color: rgb(255, 255, 255);
+  }
+  table,
+  td {
+    border: 1px solid black;
+    width: 100px;
+
+    color: rgb(0, 0, 0);
+    background-color: rgba(
+      255,
+      255,
+      255,
+      0.276
+    ); /* Agregado para establecer el color de fondo de las celdas de la tabla */
+  }
+</style>
+
+
   <h1 style="color: black; text-align: center">Preguntas</h1></br></br>
-  <a href="{% url 'crear_pregunta' %}" class="btn btn-primary mb-2"
-    >Crear</a
-  >
-  <table class="table table-striped">
+
+  <div class="container">
+    <div id="filtro-container">
+      <label for="filtro" style="color: black">Filtrar:</label>
+      <input
+        type="text"
+        id="filtro"
+        onkeyup="filtrarTabla()"
+        placeholder="Buscar..."
+        style="color: black;"
+      />
+      <a href="{% url 'crear_pregunta' %}" class="btn btn-primary mb-2" style="text-align: center"
+      >Crear</a
+    >
+    </div>
+  <table class="table"  style="width: 100%; text-align: center">
     <thead>
       <tr>
         <th>ID</th>
@@ -21,7 +54,7 @@
       {% for pregunta in preguntas %}
       <tr>
         <td>{{ pregunta.id_pregunta }}</td>
-        <td>{{ pregunta.pregunta }}</td>
+        <td style="width:200px">{{ pregunta.pregunta }}</td>
         <td>{{ pregunta.estado }}</td>
         <td>{{ pregunta.creado_por }}</td>
         <td>{{ pregunta.fecha_creacion }}</td>
@@ -44,5 +77,45 @@
       {% endfor %}
     </tbody>
   </table>
+  <!-- Agregar los botones de navegación de la paginación -->
+  <div class="pagination">
+    <span class="step-links">
+        {% if preguntas.has_previous %}
+            <a href="?page=1">&laquo; Primera</a>
+            <a href="?page={{ preguntas.previous_page_number }}">Anterior</a>
+        {% endif %}
+        <span class="current-page">
+          Página {{ preguntas.number }} de {{ preguntas.paginator.num_pages }}
+      </span>
+  
+      {% if preguntas.has_next %}
+          <a href="?page={{ preguntas.next_page_number }}">Siguiente</a>
+          <a href="?page={{ preguntas.paginator.num_pages }}">Última &raquo;</a>
+      {% endif %}
+  </span>
 </div>
+</div>
+<script>
+  function filtrarTabla() {
+    // Obtenemos el valor del input
+    var filtro = document.getElementById("filtro").value.toUpperCase();
+
+    // Obtenemos la tabla y las filas
+    var tabla = document.querySelector(".table");
+    var filas = tabla.getElementsByTagName("tr");
+
+    // Recorremos todas las filas de la tabla y ocultamos las que no coinciden con el filtro
+    for (var i = 0; i < filas.length; i++) {
+      var celdaNombre = filas[i].getElementsByTagName("td")[2];
+      if (celdaNombre) {
+        var textoCelda = celdaNombre.textContent || celdaNombre.innerText;
+        if (textoCelda.toUpperCase().indexOf(filtro) > -1) {
+          filas[i].style.display = "";
+        } else {
+          filas[i].style.display = "none";
+        }
+      }
+    }
+  }
+</script>
 {% endblock %}

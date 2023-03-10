@@ -2,7 +2,6 @@
 
 <style>
   table {
-    font-family: "Teko", sans-serif;
     width: 100%;
     border-collapse: collapse;
     border-spacing: 0;
@@ -22,9 +21,8 @@
   }
 
   th {
-    background-color: #f0f8ff;
-    color: #000000;
-    font-weight: bold;
+    background-color: #171717;
+    color: rgb(255, 255, 255);
   }
 
   tr:nth-child(even) {
@@ -41,7 +39,6 @@
     width: 100%;
   }
   button {
-    font-family: "Teko", sans-serif;
   }
   h1,
   h2,
@@ -49,7 +46,6 @@
   h4,
   h5,
   h6 {
-    font-family: "Teko", sans-serif;
     color: none;
   }
 
@@ -64,12 +60,22 @@
   #filtro-container > * {
     margin-right: 20px;
   }
+  .pagination {
+    margin: 0;
+    width: 50%;
+    padding: 10px;
+  }
 </style>
 
 <br /><br />
 
 <br /><br />
-
+<a
+  href="{% url 'crear_usuarios' %}"
+  class="btn btn-primary mb-2"
+  style="text-align: center"
+  >Crear</a
+>
 <div id="filtro-container">
   <div>
     <h3 style="color: black">Buscar</h3>
@@ -77,52 +83,19 @@
   </div>
 </div>
 <div>
-  <h3
+  <h4
     style="
       color: black;
       text-align: center;
-      font-size: 80px;
+      font-size: 50px;
       text-decoration: none !important;
     "
   >
-    USUARIOS
-  </h3>
-
-  <button
-    id="btn-activos"
-    style="
-      background-color: #000000;
-      color: rgb(255, 255, 255);
-      height: 50px;
-      border-radius: 15px;
-    "
-  >
-    Activos
-  </button>
-  <button
-    id="btn-inactivos"
-    style="
-      background-color: #000000;
-      color: rgb(255, 255, 255);
-      height: 50px;
-      border-radius: 15px;
-    "
-  >
-    Inactivos
-  </button>
-  <button
-    id="btn-todos"
-    style="
-      background-color: #000000;
-      color: rgb(255, 255, 255);
-      height: 50px;
-      border-radius: 15px;
-    "
-  >
-    Todos
-  </button>
+    <strong>USUARIOS</strong>
+  </h4>
 </div>
 <br />
+
 <div class="table-responsive">
   <table
     class="table"
@@ -183,6 +156,7 @@
       {% endfor %}
     </tbody>
   </table>
+
   <div style="text-align: center">
     <button
       type="button"
@@ -197,9 +171,6 @@
 
 <script>
   // Obtener los botones
-  const btnActivos = document.querySelector("#btn-activos");
-  const btnInactivos = document.querySelector("#btn-inactivos");
-  const btnTodos = document.querySelector("#btn-todos");
   const btnVolver = document.querySelector("#btn-volver");
   const inputFiltro = document.querySelector("#filtro-nombre");
 
@@ -210,11 +181,6 @@
 
   // Obtener la tabla
   const tablaUsuarios = document.querySelector("#tabla-usuarios");
-
-  // Agregar un event listener a cada botón
-  btnActivos.addEventListener("click", () => filtrarUsuarios("Activo"));
-  btnInactivos.addEventListener("click", () => filtrarUsuarios("Inactivo"));
-  btnTodos.addEventListener("click", () => filtrarUsuarios(null));
 
   // Función para filtrar los usuarios
   function filtrarUsuarios(estado) {

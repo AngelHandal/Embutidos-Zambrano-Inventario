@@ -45,6 +45,24 @@
     Depurar
   </button>
 </div>
+<!-- Agregar los botones de navegación de la paginación -->
+<div class="pagination">
+  <span class="step-links">
+    {% if movimientos.has_previous %}
+    <a href="?page=1">&laquo; Primera</a>
+    <a href="?page={{ movimientos.previous_page_number }}">Anterior</a>
+    {% endif %}
+    <span class="current-page">
+      Página {{ movimientos.number }} de {{ movimientos.paginator.num_pages }}
+    </span>
+
+    {% if movimientos.has_next %}
+    <a href="?page={{ movimientos.next_page_number }}">Siguiente</a>
+    <a href="?page={{ movimientos.paginator.num_pages }}">Última &raquo;</a>
+    {% endif %}
+  </span>
+</div>
+</div>
 <div class="table-responsive">
   <table class="table" style="width: 100%; text-align: center">
     <thead>
@@ -68,6 +86,7 @@
       {% endfor %}
     </tbody>
   </table>
+
   <div style="text-align: center">
     <button
       type="button"
@@ -77,8 +96,9 @@
     >
       Volver
     </button>
-  </div>
+
 </div>
+
 <script>
   const btnVolver = document.querySelector("#btn-volver");
 
