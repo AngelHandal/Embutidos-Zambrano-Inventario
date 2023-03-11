@@ -788,3 +788,51 @@ def editar_cliente(request,id):
             return redirect('bienvenido')
 
     return render(request, 'editar_cliente.html', {'usuario': usuario, 'cliente': cliente})
+
+
+
+def ver_usuarios(request):
+    # Obtener el usuario de la sesión
+    usuario = request.session.get('usuario')
+    # Si no hay usuario en la sesión, redirigir al login
+    if not usuario:
+        return redirect('login')
+    
+    usuarios = TblMsUsuario.objects.all()
+         # Agregar paginación
+    paginator = Paginator(usuarios, 5) # Mostrar 5 registros por página
+    page = request.GET.get('page')
+    usuarios = paginator.get_page(page)
+
+    # Obtener el objeto del usuario a partir del nombre de usuario en la sesión
+    usuario_obj = TblMsUsuario.objects.get(usuario=usuario)
+    # Validar si existen datos en la tabla
+    if TblMsBitacora.objects.count() == 0:
+        nuevo_id_bitacora = 1
+    else:
+        # Obtener el último ID de la bitácora
+        ultimo_id_bitacora = TblMsBitacora.objects.order_by("-id_bitacora").first().id_bitacora
+        nuevo_id_bitacora = ultimo_id_bitacora + 1
+
+    # Obtener la instancia del objeto asociado
+    objeto = TblMsObjetos.objects.get(pk=1)
+    # Crear un registro en la tabla de bitácora
+    TblMsBitacora.objects.create(
+        id_bitacora=nuevo_id_bitacora,
+        id_usuario=usuario_obj,  # Usar la instancia del objeto del usuario
+        id_objeto=objeto,  # Puedes cambiar el ID del objeto según corresponda
+        fecha=datetime.now(),
+        accion='Usuarios',
+        descripcion='El usuario {} ha accedido a la pantalla lista de usuarios'.format(usuario),
+        creado_por=usuario,
+        fecha_creacion=datetime.now(),
+        modificado_por=usuario,
+        fecha_modificacion=datetime.now()
+    )
+
+    # Pasar los valores a la plantilla
+    #context = {
+    #   'usuario': usuario,
+    #}
+    # Renderizar la plantilla con los datos de contexto
+    return render(request, "ver_usuarios.html", {'usuarios': usuarios, 'usuario': usuario})

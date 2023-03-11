@@ -9,7 +9,7 @@ urlpatterns = [
     path('responde_pregunta/', views.preguntas_seguridad_recuperar, name='responde_pregunta'),
     path('actualizar_por_pregunta/', views.actualizar_contrasena_por_preguntas, name='actualizar_por_pregunta'),
     path('cerrar', views.cerrar_sesion, name='cerrar_sesion'),
-    path('user_views', views.users_view, name='user_views'),
+    #path('user_views', views.users_view, name='user_views'),
     path('roles_views', views.rols_view, name='rols_views'),
     path('roles/<int:id>/editar/', views.guardar_rol_editado, name='editar_rol'),
     path('eliminar_rol/<int:id>/', views.eliminar_rol, name='eliminar_rol'),
@@ -28,6 +28,7 @@ urlpatterns = [
     path('ver_mas_clientes/<int:id>/', views.ver_mas_clientes, name='ver_mas_clientes'),
     path('clientes/crear/', views.crear_cliente, name='crear_clientes'),
     path('clientes/editar/<int:id>/', views.editar_cliente, name='editar_cliente'),
+    path('ver_usuarios', views.ver_usuarios, name='ver_usuarios'),
 
 
 ]

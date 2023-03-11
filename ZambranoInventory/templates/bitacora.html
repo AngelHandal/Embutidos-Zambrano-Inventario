@@ -5,8 +5,6 @@
     height: 100%;
   }
   body {
-    font-family: Teko, sans-serif;
-    background: radial-gradient(circle at top, #ffbb00, #e61414);
     background-size: cover;
     color: black;
   }
@@ -45,23 +43,7 @@
     Depurar
   </button>
 </div>
-<!-- Agregar los botones de navegación de la paginación -->
-<div class="pagination">
-  <span class="step-links">
-    {% if movimientos.has_previous %}
-    <a href="?page=1">&laquo; Primera</a>
-    <a href="?page={{ movimientos.previous_page_number }}">Anterior</a>
-    {% endif %}
-    <span class="current-page">
-      Página {{ movimientos.number }} de {{ movimientos.paginator.num_pages }}
-    </span>
 
-    {% if movimientos.has_next %}
-    <a href="?page={{ movimientos.next_page_number }}">Siguiente</a>
-    <a href="?page={{ movimientos.paginator.num_pages }}">Última &raquo;</a>
-    {% endif %}
-  </span>
-</div>
 </div>
 <div class="table-responsive">
   <table class="table" style="width: 100%; text-align: center">
@@ -97,6 +79,24 @@
       Volver
     </button>
 
+</div>
+<!-- Agregar los botones de navegación de la paginación -->
+<div class="pagination">
+  <span class="step-links">
+    <span class="current-page">
+      Página {{ movimientos.number }} de {{ movimientos.paginator.num_pages }}
+    </span><br/>
+    {% if movimientos.has_previous %}
+    <a href="?page=1">&laquo; Primera</a>
+    <a href="?page={{ movimientos.previous_page_number }}">Anterior</a>
+    {% endif %}
+
+
+    {% if movimientos.has_next %}
+    <a href="?page={{ movimientos.next_page_number }}">Siguiente</a>
+    <a href="?page={{ movimientos.paginator.num_pages }}">Última &raquo;</a>
+    {% endif %}
+  </span>
 </div>
 
 <script>
